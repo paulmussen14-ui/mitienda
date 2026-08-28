@@ -1,0 +1,12 @@
+{
+  "name": "mitienda",
+  "version": "1.0.0",
+  "description": "Sistema web de MiTienda",
+  "type": "module",
+  "scripts": {
+    "start": "npx live-server"
+  },
+  "dependencies": {
+    "firebase": "^12.18.0"
+  }
+}
