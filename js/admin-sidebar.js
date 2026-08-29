@@ -1,4 +1,5 @@
 import { obtenerIniciales } from "./negocios.js";
+import { cerrarSesion } from "./auth.js";
 
 /* =====================================================
    ITEMS DEL MENÚ
@@ -38,6 +39,7 @@ export function renderSidebar(negocio, paginaActiva) {
 
     aside.appendChild(construirIdentidad(negocio));
     aside.appendChild(construirNav(paginaActiva));
+    aside.appendChild(construirFooter());
 
     contenedor.appendChild(aside);
 }
@@ -48,9 +50,9 @@ function construirIdentidad(negocio) {
     const identidad = document.createElement("div");
     identidad.className = "sidebar-identidad";
 
-    if (negocio?.logoUrl) {
+    if (negocio?.logo) {
         const img = document.createElement("img");
-        img.src = negocio.logoUrl;
+        img.src = negocio.logo;
         img.alt = negocio.nombre || "Logo del negocio";
         img.className = "sidebar-logo";
         identidad.appendChild(img);
@@ -96,4 +98,42 @@ function construirNav(paginaActiva) {
     });
 
     return nav;
+}
+
+
+/* =====================================================
+   PIE DEL SIDEBAR — botón de cerrar sesión
+   Vive dentro del sidebar (no en el topbar de cada página)
+   y queda pegado abajo gracias a margin-top: auto en CSS.
+===================================================== */
+
+function construirFooter() {
+
+    const footer = document.createElement("div");
+    footer.className = "sidebar-footer";
+
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.id = "btn-cerrar-sesion";
+    boton.className = "sidebar-link sidebar-link--salir";
+
+    const icono = document.createElement("span");
+    icono.className = "sidebar-icono";
+    icono.textContent = "🚪";
+
+    const texto = document.createElement("span");
+    texto.textContent = "Cerrar sesión";
+
+    boton.appendChild(icono);
+    boton.appendChild(texto);
+
+    boton.addEventListener("click", async () => {
+        boton.disabled = true;
+        await cerrarSesion();
+        window.location.href = "login.html";
+    });
+
+    footer.appendChild(boton);
+
+    return footer;
 }

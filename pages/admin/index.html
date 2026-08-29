@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel administrativo · MiTienda</title>
     <link rel="stylesheet" href="../../css/theme.css">
     <link rel="stylesheet" href="../../css/admin.css">
@@ -16,20 +17,111 @@
         <div id="admin-sidebar"></div>
 
         <main class="admin-main">
-            <header class="admin-topbar">
-                <h1 id="admin-nombre-negocio">🏪 Panel</h1>
-                <button id="btn-cerrar-sesion" class="btn btn-primary">Cerrar sesión</button>
+            <header class="admin-banner" id="admin-banner">
+                <div class="admin-banner-overlay"></div>
+                <h1 id="admin-nombre-negocio" class="admin-banner-titulo">🏪 Panel</h1>
             </header>
 
-            <h2>Bienvenido, <span id="admin-usuario-nombre"></span></h2>
+            <h2>Resumen de hoy — <span id="admin-usuario-nombre"></span></h2>
 
-            <div class="grid-tiendas">
-                <a href="productos.html" class="tienda-card"><h3>📦 Productos</h3></a>
-                <a href="pedidos.html" class="tienda-card"><h3>🧾 Pedidos</h3></a>
-                <a href="inventario.html" class="tienda-card"><h3>📊 Inventario</h3></a>
-                <a href="ventas.html" class="tienda-card"><h3>💰 Ventas</h3></a>
-                <a href="usuarios.html" class="tienda-card"><h3>👥 Usuarios</h3></a>
+            <!-- ========================================
+                 TARJETAS DE RESUMEN
+            ========================================= -->
+
+            <div class="stat-grid">
+
+                <div class="stat-card">
+                    <span class="stat-valor" id="stat-ventas-hoy">S/ 0.00</span>
+                    <span class="stat-label">Ventas de hoy</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-valor" id="stat-pedidos-pendientes">0</span>
+                    <span class="stat-label">Pedidos pendientes</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-valor" id="stat-productos-activos">0</span>
+                    <span class="stat-label">Productos activos</span>
+                </div>
+
+                <div class="stat-card stat-card--alerta">
+                    <span class="stat-valor" id="stat-stock-bajo">0</span>
+                    <span class="stat-label">Stock bajo</span>
+                </div>
+
             </div>
+
+            <!-- ========================================
+                 ACCESOS RÁPIDOS
+            ========================================= -->
+
+            <div class="action-grid">
+
+                <a href="inventario.html" class="action-card">
+                    <span class="action-icono">📦</span>
+                    <div>
+                        <h3>Gestionar inventario</h3>
+                        <p>Ver stock, registrar entradas y salidas</p>
+                    </div>
+                </a>
+
+                <a href="pedidos.html" class="action-card">
+                    <span class="action-icono">🧾</span>
+                    <div>
+                        <h3>Ver pedidos</h3>
+                        <p id="accion-pedidos-desc">Pedidos esperando confirmación</p>
+                    </div>
+                </a>
+
+                <a href="ventas.html" class="action-card">
+                    <span class="action-icono">💰</span>
+                    <div>
+                        <h3>Ver ventas</h3>
+                        <p>Historial y resumen de ingresos</p>
+                    </div>
+                </a>
+
+                <a href="productos.html" class="action-card">
+                    <span class="action-icono">🛍️</span>
+                    <div>
+                        <h3>Gestionar productos</h3>
+                        <p>Crear, editar y organizar tu catálogo</p>
+                    </div>
+                </a>
+
+                <a href="configuracion.html" class="action-card">
+                    <span class="action-icono">🎨</span>
+                    <div>
+                        <h3>Personalizar tienda</h3>
+                        <p>Colores, logo y datos de contacto</p>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- ========================================
+                 MOVIMIENTOS DE INVENTARIO RECIENTES
+            ========================================= -->
+
+            <section class="dashboard-movimientos">
+                <h2>Movimientos de inventario recientes</h2>
+                <table class="tabla-dashboard">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-movimientos-dashboard">
+                        <tr><td colspan="5">Cargando movimientos...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
         </main>
     </div>
 

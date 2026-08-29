@@ -1,6 +1,5 @@
 // js/admin-config.js
 import { protegerPanelAdmin } from "./admin-guard.js";
-import { cerrarSesion } from "./auth.js";
 import { renderSidebar } from "./admin-sidebar.js";
 import { actualizarNegocio } from "./negocios.js";
 
@@ -17,13 +16,27 @@ const LOGO_MAX_ANCHO = 300;
 const LOGO_MAX_ALTO = 300;
 const LOGO_CALIDAD = 0.85;
 
-const PORTADA_MAX_ANCHO = 800;
-const PORTADA_MAX_ALTO = 400;
+const PORTADA_MAX_ANCHO = 1600;
+const PORTADA_MAX_ALTO = 500;
 const PORTADA_CALIDAD = 0.75;
+
+/* =====================================================
+   PALETAS DISPONIBLES
+   Cada opción define un color primario (header, banner,
+   botones) y un color de acento (precios, CTAs).
+===================================================== */
+
+const PALETAS = [
+    { id: "verde", primario: "#1F5C4A", oscuro: "#123B2F", acento: "#E8A23D" },
+    { id: "magenta", primario: "#A3195B", oscuro: "#6E0F3D", acento: "#F2A6C7" },
+    { id: "azul", primario: "#1D4E89", oscuro: "#123457", acento: "#7FB2E5" },
+    { id: "naranja", primario: "#B4530A", oscuro: "#7A3707", acento: "#F2B366" }
+];
 
 let negocioActual = null;
 let logoBase64 = null;
 let portadaBase64 = null;
+let paletaSeleccionada = null;
 
 const elCargando = document.getElementById("admin-cargando");
 const elContenido = document.getElementById("admin-contenido");
@@ -34,8 +47,15 @@ const previewLogo = document.getElementById("preview-logo");
 const previewLogoVacio = document.getElementById("preview-logo-vacio");
 const previewPortada = document.getElementById("preview-portada");
 const previewPortadaVacio = document.getElementById("preview-portada-vacio");
+
+const contenedorSwatches = document.getElementById("color-swatches");
+const inputNombre = document.getElementById("input-nombre-negocio");
+const inputDireccion = document.getElementById("input-direccion");
+const inputHorario = document.getElementById("input-horario");
+const previewBanner = document.getElementById("preview-banner");
+const previewBannerNombre = document.getElementById("preview-banner-nombre");
+
 const btnGuardar = document.getElementById("btn-guardar-config");
-const btnCerrarSesion = document.getElementById("btn-cerrar-sesion");
 const elMensaje = document.getElementById("config-mensaje");
 
 
@@ -46,14 +66,11 @@ async function iniciar() {
 
     renderSidebar(negocioActual, "configuracion");
     mostrarPreviewActual();
+    construirSwatches();
+    precargarDatosNegocio();
 
     elCargando.style.display = "none";
     elContenido.style.display = "flex";
-
-    btnCerrarSesion.addEventListener("click", async () => {
-        await cerrarSesion();
-        window.location.href = "login.html";
-    });
 }
 
 iniciar();
@@ -83,6 +100,76 @@ function mostrarPreviewActual() {
         previewPortadaVacio.style.display = "none";
     }
 }
+
+
+/* =====================================================
+   PERSONALIZACIÓN — colores, nombre, dirección, horario
+===================================================== */
+
+function precargarDatosNegocio() {
+
+    inputNombre.value = negocioActual?.nombre || "";
+    inputDireccion.value = negocioActual?.direccion || "";
+    inputHorario.value = negocioActual?.horario || "";
+
+    // Si el negocio ya tiene un color primario guardado, tratamos
+    // de encontrar a qué paleta corresponde; si no coincide con
+    // ninguna (color personalizado viejo), usamos la primera.
+    const primarioActual = negocioActual?.colores?.primario;
+    const coincide = PALETAS.find(p => p.primario.toLowerCase() === (primarioActual || "").toLowerCase());
+
+    paletaSeleccionada = coincide || PALETAS[0];
+
+    marcarSwatchSeleccionado();
+    actualizarPreviewBanner();
+}
+
+function construirSwatches() {
+
+    contenedorSwatches.innerHTML = "";
+
+    PALETAS.forEach(paleta => {
+
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = "color-swatch";
+        boton.style.background = paleta.primario;
+        boton.dataset.paletaId = paleta.id;
+        boton.setAttribute("aria-label", `Color ${paleta.id}`);
+
+        boton.addEventListener("click", () => {
+            paletaSeleccionada = paleta;
+            marcarSwatchSeleccionado();
+            actualizarPreviewBanner();
+        });
+
+        contenedorSwatches.appendChild(boton);
+    });
+}
+
+function marcarSwatchSeleccionado() {
+
+    const botones = contenedorSwatches.querySelectorAll(".color-swatch");
+
+    botones.forEach(boton => {
+        boton.classList.toggle(
+            "color-swatch--activo",
+            boton.dataset.paletaId === paletaSeleccionada?.id
+        );
+    });
+}
+
+function actualizarPreviewBanner() {
+
+    if (!paletaSeleccionada) return;
+
+    previewBanner.style.setProperty("--preview-primario", paletaSeleccionada.primario);
+    previewBanner.style.setProperty("--preview-oscuro", paletaSeleccionada.oscuro);
+
+    previewBannerNombre.textContent = inputNombre.value.trim() || "Tu negocio";
+}
+
+inputNombre.addEventListener("input", actualizarPreviewBanner);
 
 
 /* =====================================================
@@ -169,22 +256,28 @@ btnGuardar.addEventListener("click", async () => {
         return;
     }
 
-    // 🔍 DIAGNÓSTICO TEMPORAL — borrar una vez resuelto el problema
-    // de permisos. JSON.stringify revela espacios o caracteres
-    // invisibles que no se ven en la consola de Firestore.
-    console.log("🔍 uid autenticado:", obtenerUsuarioActual()?.uid);
-    console.log("🔍 negocioActual.id:", negocioActual.id);
-    console.log("🔍 plan (raw):", JSON.stringify(negocioActual.plan), "longitud:", negocioActual.plan?.length);
-    console.log("🔍 ownerUid (raw):", JSON.stringify(negocioActual.ownerUid), "longitud:", negocioActual.ownerUid?.length);
-    console.log("🔍 TODAS las claves de negocioActual:", Object.keys(negocioActual));
-    console.log("🔍 negocioActual completo:", JSON.stringify(negocioActual, null, 2));
+    const nombre = inputNombre.value.trim();
+
+    if (!nombre) {
+        elMensaje.textContent = "❌ El nombre del negocio no puede estar vacío.";
+        return;
+    }
 
     btnGuardar.disabled = true;
     elMensaje.textContent = "Guardando...";
 
     try {
 
-        const cambios = {};
+        const cambios = {
+            nombre,
+            direccion: inputDireccion.value.trim(),
+            horario: inputHorario.value.trim(),
+            colores: {
+                primario: paletaSeleccionada.primario,
+                acento: paletaSeleccionada.acento,
+                secundario: negocioActual?.colores?.secundario || "#ffffff"
+            }
+        };
 
         // Usamos los nombres de campo reales del documento: "logo" y "banner"
         if (logoBase64) cambios.logo = logoBase64;
@@ -200,17 +293,14 @@ btnGuardar.addEventListener("click", async () => {
             return;
         }
 
-        if (Object.keys(cambios).length > 0) {
-            const exito = await actualizarNegocio(negocioActual.id, cambios);
+        const exito = await actualizarNegocio(negocioActual.id, cambios);
 
-            if (exito) {
-                negocioActual = { ...negocioActual, ...cambios };
-                elMensaje.textContent = "✅ Cambios guardados";
-            } else {
-                elMensaje.textContent = "❌ No se pudo guardar. Revisa la consola (probablemente sean las reglas de Firestore).";
-            }
+        if (exito) {
+            negocioActual = { ...negocioActual, ...cambios };
+            renderSidebar(negocioActual, "configuracion");
+            elMensaje.textContent = "✅ Cambios guardados";
         } else {
-            elMensaje.textContent = "No hay cambios para guardar";
+            elMensaje.textContent = "❌ No se pudo guardar. Revisa la consola (probablemente sean las reglas de Firestore).";
         }
 
     } catch (error) {
