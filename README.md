@@ -1,4 +1,4 @@
-![Logo MiTienda](img/logo.png)
+![Logo MiTienda](assets/img/logo.png)
 
 # 🛒 MiTienda
 
@@ -49,7 +49,7 @@ Paleta de colores definida para la tienda de ejemplo **Bodega Pepe**, pensada pa
 
 ## 📱 Bosquejo navegable (capturas)
 
-![Capturas del bosquejo navegable de MiTienda en móvil](img/capturas-movil.png)
+![Capturas del bosquejo navegable de MiTienda en móvil](assets/img/capturas-movil.png)
 
 Vistas del bosquejo navegable — Evidencia AA1:
 
