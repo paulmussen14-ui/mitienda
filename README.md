@@ -105,7 +105,9 @@ mitienda/
 │   ├── negocios.js             # Manejo de tienda/negocio actual
 │   ├── productos.js / carrito.js / pedidos.js / ventas.js
 │   └── admin-*.js              # Lógica del panel administrativo
-├── assets/icons/                # Íconos y favicon
+├── assets/
+│   ├── icons/                  # Íconos y favicon
+│   └── img/                    # Logo y capturas del bosquejo
 └── package.json
 ```
 
@@ -127,4 +129,3 @@ Como propuesta de mejora futura, se plantea incorporar **recomendaciones persona
 - Jean Paul Moncada
 
 Proyecto grupal — Actividad de Aprendizaje 1 (AA1)
-Jean Paul Moncada Nateros
