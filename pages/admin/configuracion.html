@@ -1,0 +1,57 @@
+<!-- pages/admin/configuracion.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración · MiTienda</title>
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin-sidebar.css">
+</head>
+<body>
+
+    <div id="admin-cargando">Verificando sesión...</div>
+
+    <div id="admin-contenido" class="admin-layout" style="display:none;">
+        <div id="admin-sidebar"></div>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h1>Configuración</h1>
+                <button id="btn-cerrar-sesion" class="btn btn-primary">Cerrar sesión</button>
+            </header>
+
+            <section class="config-seccion">
+                <h2>Identidad del negocio</h2>
+                <p class="config-ayuda">
+                    El logo y la portada que subas aquí también se mostrarán en la
+                    tarjeta pública de tu negocio, visible para tus clientes.
+                </p>
+
+                <div class="config-campo">
+                    <label for="input-logo">Logo</label>
+                    <div class="config-preview config-preview-logo">
+                        <img id="preview-logo" src="" alt="Logo actual" style="display:none;">
+                        <span id="preview-logo-vacio">Sin logo todavía</span>
+                    </div>
+                    <input type="file" id="input-logo" accept="image/*">
+                </div>
+
+                <div class="config-campo">
+                    <label for="input-portada">Imagen de portada</label>
+                    <div class="config-preview config-preview-portada">
+                        <img id="preview-portada" src="" alt="Portada actual" style="display:none;">
+                        <span id="preview-portada-vacio">Sin portada todavía</span>
+                    </div>
+                    <input type="file" id="input-portada" accept="image/*">
+                </div>
+
+                <button id="btn-guardar-config" class="btn btn-primary">Guardar cambios</button>
+                <p id="config-mensaje"></p>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../../js/admin-config.js"></script>
+</body>
+</html>

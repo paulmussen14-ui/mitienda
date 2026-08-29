@@ -1,0 +1,103 @@
+/* ============================================================
+   MITIENDA — SECCIÓN DE PLANES (index.html)
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+.planes-section {
+    background: var(--verde-oscuro);
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    margin: 26px 0;
+}
+
+.planes-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.planes-header .tag {
+    display: inline-block;
+    background: var(--mostaza);
+    color: var(--verde-oscuro);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.planes-header h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.planes-header p {
+    color: #EAF3EE;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.planes-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+@media (min-width: 720px) {
+    .planes-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.plan-tarjeta {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-tarjeta.destacado {
+    border: 2px solid var(--mostaza);
+    transform: translateY(-4px);
+}
+
+.plan-tarjeta h3 {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.plan-tarjeta .plan-tarjeta-precio {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+    margin-bottom: 12px;
+}
+
+.plan-tarjeta ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    flex: 1;
+}
+
+.plan-tarjeta li {
+    font-size: 12.5px;
+    color: var(--tinta-suave);
+    padding: 4px 0;
+}
+
+.plan-tarjeta li::before {
+    content: "✓ ";
+    color: var(--verde);
+    font-weight: 700;
+}
+
+.plan-tarjeta .btn {
+    display: block;
+    text-align: center;
+    width: 100%;
+}

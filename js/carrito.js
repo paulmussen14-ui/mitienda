@@ -11,70 +11,34 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import { db } from "./firebase.js";
-import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocio.js";
-
-/* ============================================================
-   CONFIGURACIÓN
-============================================================ */
-
-const CLIENTE_STORAGE_KEY =
-    "mitienda_cliente_id";
-
-
-/* ============================================================
-   OBTENER / CREAR CLIENTE LOCAL
-============================================================ */
+import { dbCliente as db } from "./firebase-cliente.js";
+import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocios.js";
+import { obtenerClienteId } from "./auth-cliente.js";
 
 /*
- * TEMPORAL
- *
- * Mientras todavía no tengamos el login conectado,
- * cada navegador tendrá un identificador de cliente.
- *
- * Más adelante este valor será reemplazado por el
- * cliente_id real obtenido desde el sistema de login.
+ * NOTA: "db" aquí es el Firestore de la app AISLADA del
+ * cliente (firebase-cliente.js), no el de firebase.js. Es
+ * necesario para que la sesión anónima del cliente y las
+ * operaciones de Firestore usen la misma app de Firebase.
  */
 
-function obtenerClienteId() {
-
-    let clienteId =
-        localStorage.getItem(
-            CLIENTE_STORAGE_KEY
-        );
-
-
-    if (!clienteId) {
-
-        clienteId =
-            "cli_" +
-            crypto.randomUUID();
-
-
-        localStorage.setItem(
-            CLIENTE_STORAGE_KEY,
-            clienteId
-        );
-
-
-        console.log(
-            "👤 Nuevo cliente creado:",
-            clienteId
-        );
-
-    }
-
-
-    return clienteId;
-
-}
-
-
 /* ============================================================
-   EXPORTAR CLIENTE ACTUAL
+   CLIENTE ACTUAL (uid anónimo de Firebase Auth)
+
+   Antes: cada navegador se inventaba un cliente_id con
+   localStorage, sin verificación real.
+
+   Ahora: obtenerClienteId() (importado de auth-cliente.js)
+   devuelve el uid real dado por Firebase Anonymous Auth, el
+   mismo que usan las reglas de Firestore para autorizar.
+
+   Nota: obtenerClienteId() es ASÍNCRONO ahora. Si algún otro
+   archivo importa obtenerClienteActual() esperando un string
+   inmediato (no una Promise), hay que actualizarlo para que
+   haga "await obtenerClienteActual()".
 ============================================================ */
 
-export function obtenerClienteActual() {
+export async function obtenerClienteActual() {
 
     return obtenerClienteId();
 
@@ -121,7 +85,7 @@ async function obtenerNegocioSeguro() {
 export async function obtenerCarrito() {
 
     const clienteId =
-        obtenerClienteId();
+        await obtenerClienteId();
 
 
     const negocio =
@@ -302,7 +266,7 @@ export async function agregarAlCarrito(
         ---------------------------------------------------- */
 
         const clienteId =
-            obtenerClienteId();
+            await obtenerClienteId();
 
 
         /* ----------------------------------------------------
@@ -1734,7 +1698,7 @@ async function iniciarCarrito() {
     try {
 
         const clienteId =
-            obtenerClienteId();
+            await obtenerClienteId();
 
 
         console.log(

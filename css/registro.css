@@ -1,0 +1,248 @@
+/* ============================================================
+   MITIENDA — REGISTRO DE TIENDA (registro.html)
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+.registro-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+}
+
+.registro-header {
+    text-align: center;
+    margin-bottom: 26px;
+}
+
+.registro-header .tag {
+    display: inline-block;
+    background: var(--mostaza);
+    color: var(--verde-oscuro);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.registro-header h1 {
+    font-size: 27px;
+    margin-bottom: 6px;
+}
+
+.registro-card {
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.registro-card fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.registro-card legend {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--verde-oscuro);
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.registro-card label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--tinta);
+    margin-top: 12px;
+    margin-bottom: 5px;
+}
+
+.registro-card input[type="text"],
+.registro-card input[type="email"],
+.registro-card input[type="password"] {
+    width: 100%;
+    border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--tinta);
+    outline: none;
+    transition: .15s;
+}
+
+.registro-card input:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-suave);
+}
+
+.registro-card small {
+    display: block;
+    font-size: 11px;
+    color: var(--tinta-suave);
+    margin-top: 4px;
+}
+
+
+/* ============================================================
+   LOGO DE NEGOCIO (archivo / URL)
+   ============================================================ */
+
+.logo-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.logo-tab {
+    border: 1.5px solid var(--linea);
+    background: #fff;
+    color: var(--tinta-suave);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.logo-tab.on {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: #fff;
+}
+
+.logo-modo input[type="file"],
+.logo-modo input[type="text"] {
+    width: 100%;
+    border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--tinta);
+    outline: none;
+}
+
+.logo-modo input:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-suave);
+}
+
+.logo-preview {
+    display: block;
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1.5px solid var(--linea);
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   TARJETAS DE PLAN
+   ============================================================ */
+
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.plan-card {
+    border: 1.5px solid var(--linea);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: .15s;
+    background: var(--papel);
+}
+
+.plan-card:hover {
+    border-color: var(--verde);
+}
+
+.plan-card.on {
+    border-color: var(--mostaza-oscuro);
+    background: var(--mostaza);
+}
+
+.plan-card .plan-nombre {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--verde-oscuro);
+    margin-bottom: 4px;
+}
+
+.plan-card.on .plan-nombre {
+    color: #3d2a05;
+}
+
+.plan-card .plan-precio {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--tinta-suave);
+}
+
+.plan-card.on .plan-precio {
+    color: #3d2a05;
+}
+
+
+/* ============================================================
+   BOTÓN Y ERROR
+   ============================================================ */
+
+.login-error {
+    background: #FBEAE8;
+    border: 1px solid var(--rojo);
+    color: var(--rojo);
+    font-size: 12.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.registro-card .btn {
+    margin-top: 22px;
+    min-height: 46px;
+}
+
+.registro-login-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 520px) {
+
+    .registro-card {
+        padding: 20px;
+    }
+
+    .plan-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

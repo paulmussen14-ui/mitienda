@@ -4,7 +4,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import { db } from "./firebase.js";
-import { obtenerIniciales } from "./negocio.js";
+import { obtenerIniciales } from "./negocios.js";
 
 
 /* ============================================================
@@ -344,19 +344,36 @@ function crearTarjetaTienda(tienda) {
        LOGO REAL
        ======================================================== */
 
-    if (
-        tienda.logo &&
-        tienda.logo.trim() !== ""
-    ) {
+if (
+    tienda.logoUrl &&
+    tienda.logoUrl.trim() !== ""
+) {
 
-        iniciales.innerHTML = `
-            <img
-                src="${tienda.logo}"
-                alt="${tienda.nombre || "Tienda"}"
-            >
-        `;
+    iniciales.innerHTML = `
+        <img
+            src="${tienda.logoUrl}"
+            alt="${tienda.nombre || "Tienda"}"
+        >
+    `;
 
-    }
+}
+
+/* ========================================================
+   PORTADA (banner superior, si existe)
+   ======================================================== */
+
+if (
+    tienda.portadaUrl &&
+    tienda.portadaUrl.trim() !== ""
+) {
+
+    const portada = document.createElement("img");
+    portada.src = tienda.portadaUrl;
+    portada.alt = `Portada de ${tienda.nombre || "la tienda"}`;
+    portada.className = "tienda-portada";
+
+    tarjeta.insertBefore(portada, tarjeta.firstChild);
+}
 
 
     /* ========================================================

@@ -7,6 +7,9 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase
 // Authentication
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+// Storage
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCykh1aBotBtpvHj1JddOU69P7rzh51pbY",
   authDomain: "mitienda-ee0e8.firebaseapp.com",
@@ -24,5 +27,8 @@ export const db = getFirestore(app);
 
 // Authentication
 export const auth = getAuth(app);
+
+// Storage
+export const storage = getStorage(app);
 
 export { firebaseConfig };

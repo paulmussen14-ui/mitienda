@@ -12,6 +12,9 @@
 
     <!-- Diseño del marketplace -->
     <link rel="stylesheet" href="css/home.css">
+
+    <!-- Sección de planes -->
+    <link rel="stylesheet" href="css/planes.css">
 </head>
 
 <body>
@@ -46,7 +49,11 @@
             <a href="pages/pedidos.html">
                 📦 Pedidos
             </a>
-            
+
+            <a href="pages/registro.html">
+                🏪 Crear cuenta
+            </a>
+
             <a href="pages/admin/login.html">
                 🔐 Iniciar sesión
             </a>
@@ -176,6 +183,76 @@
             </button>
 
         </div>
+
+
+
+        <!-- =================================================
+             PLANES (abre tu propia tienda)
+        ================================================== -->
+
+        <section class="planes-section">
+
+            <div class="planes-header">
+
+                <span class="tag">
+                    🏪 PARA DUEÑOS DE TIENDA
+                </span>
+
+                <h2>
+                    Abre tu propia tienda en MiTienda
+                </h2>
+
+                <p>
+                    Regístrate, elige un plan y tu tienda queda activa
+                    al instante. Sin aprobaciones ni esperas.
+                </p>
+
+            </div>
+
+            <div class="planes-grid">
+
+                <article class="plan-tarjeta">
+                    <h3>Básico</h3>
+                    <span class="plan-tarjeta-precio">Gratis</span>
+                    <ul>
+                        <li>Hasta 30 productos</li>
+                        <li>Panel administrativo básico</li>
+                        <li>Recepción de pedidos</li>
+                    </ul>
+                    <a href="pages/registro.html?plan=basico" class="btn btn-primary">
+                        Empezar gratis →
+                    </a>
+                </article>
+
+                <article class="plan-tarjeta destacado">
+                    <h3>Pro</h3>
+                    <span class="plan-tarjeta-precio">S/ 29 /mes</span>
+                    <ul>
+                        <li>Productos ilimitados</li>
+                        <li>Reportes de ventas e inventario</li>
+                        <li>Colores personalizados de tienda</li>
+                    </ul>
+                    <a href="pages/registro.html?plan=pro" class="btn btn-accent">
+                        Elegir Pro →
+                    </a>
+                </article>
+
+                <article class="plan-tarjeta">
+                    <h3>Premium</h3>
+                    <span class="plan-tarjeta-precio">S/ 59 /mes</span>
+                    <ul>
+                        <li>Todo lo de Pro</li>
+                        <li>Múltiples usuarios administradores</li>
+                        <li>Soporte prioritario</li>
+                    </ul>
+                    <a href="pages/registro.html?plan=premium" class="btn btn-primary">
+                        Elegir Premium →
+                    </a>
+                </article>
+
+            </div>
+
+        </section>
 
 
 

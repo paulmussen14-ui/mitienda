@@ -10,72 +10,22 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import { db } from "./firebase.js";
-import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocio.js";
+import { dbCliente as db } from "./firebase-cliente.js";
+import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocios.js";
+import { obtenerClienteId } from "./auth-cliente.js";
 
 /* =====================================================
-   CONFIGURACIÓN
+   CLIENTE ACTUAL
+
+   La lógica de autenticación anónima vive ahora en
+   auth-cliente.js (compartida con carrito.js), para que
+   ambos archivos siempre estén sincronizados.
+
+   NOTA: "db" aquí es el Firestore de la app AISLADA del
+   cliente (firebase-cliente.js), no el de firebase.js.
 ===================================================== */
 
-const CLIENTE_STORAGE_KEY =
-    "mitienda_cliente_id";
 
-
-/* =====================================================
-   OBTENER CLIENTE ACTUAL
-===================================================== */
-
-function obtenerClienteId() {
-
-    let clienteId =
-        localStorage.getItem(
-            CLIENTE_STORAGE_KEY
-        );
-
-
-    /*
-     * Si todavía no existe,
-     * crear un identificador temporal.
-     */
-
-    if (!clienteId) {
-
-        clienteId =
-            "cli_" +
-            crypto.randomUUID();
-
-        localStorage.setItem(
-            CLIENTE_STORAGE_KEY,
-            clienteId
-        );
-
-        console.log(
-            "👤 Nuevo cliente:",
-            clienteId
-        );
-    }
-
-
-    return clienteId;
-}
-
-/* =================================================
-   NOMBRE DE LA TIENDA
-================================================= */
-
-const negocioElemento =
-    nodo.querySelector(
-        '[data-campo="negocio"]'
-    );
-
-
-if (negocioElemento) {
-
-    negocioElemento.textContent =
-        negocio.nombre ||
-        "Tienda";
-
-}
 /* =====================================================
    OBTENER CARRITO ACTIVO
 ===================================================== */
@@ -96,7 +46,7 @@ async function obtenerCarritoActivo() {
 
 
     const clienteId =
-        obtenerClienteId();
+        await obtenerClienteId();
 
 
     /*
@@ -201,7 +151,7 @@ export async function crearPedido() {
         ------------------------------------------------- */
 
         const clienteId =
-            obtenerClienteId();
+            await obtenerClienteId();
 
 
         /* -------------------------------------------------
@@ -548,7 +498,7 @@ async function cargarPedidos() {
         ================================================= */
 
         const clienteId =
-            obtenerClienteId();
+            await obtenerClienteId();
 
 
         console.log(

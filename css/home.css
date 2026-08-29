@@ -277,6 +277,17 @@
 
     font-family: 'Baloo 2', sans-serif;
 }
+
+.tienda-card {
+    overflow: hidden; /* para que la portada respete las esquinas redondeadas */
+}
+
+.tienda-portada {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
 /* ============================================================
    LOGO DE LA TIENDA
    ============================================================ */

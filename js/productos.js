@@ -7,7 +7,7 @@ import {
 
 import { db } from "./firebase.js";
 import { agregarAlCarrito } from "./carrito.js";
-import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocio.js";
+import { obtenerNegocioActual, configurarNavegacionNegocio } from "./negocios.js";
 
 /* ============================================================
    CONFIGURACIÓN

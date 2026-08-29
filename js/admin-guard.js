@@ -1,6 +1,6 @@
 import { observarSesion, cerrarSesion } from "./auth.js";
 import { obtenerUsuario } from "./usuarios.js";
-import { obtenerNegocioPorId } from "./negocio.js";
+import { obtenerNegocioPorId } from "./negocios.js";
 
 
 /**
