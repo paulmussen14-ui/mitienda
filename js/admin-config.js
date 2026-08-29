@@ -1,7 +1,6 @@
 // js/admin-config.js
-alert("🚨 VERSION-DIAGNOSTICO-3 CARGADA"); // 🔍 TEMPORAL — borrar al terminar el diagnóstico
 import { protegerPanelAdmin } from "./admin-guard.js";
-import { cerrarSesion, obtenerUsuarioActual } from "./auth.js";
+import { cerrarSesion } from "./auth.js";
 import { renderSidebar } from "./admin-sidebar.js";
 import { actualizarNegocio } from "./negocios.js";
 
