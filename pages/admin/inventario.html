@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario · Panel admin · MiTienda</title>
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand"><h2 id="admin-nombre-negocio">🏪 Panel</h2></div>
+
+        <nav class="navtabs">
+            <a href="index.html">Inicio</a>
+            <a href="productos.html">📦 Productos</a>
+            <a href="pedidos.html">🧾 Pedidos</a>
+            <a class="active" href="inventario.html">📊 Inventario</a>
+            <a href="ventas.html">💰 Ventas</a>
+            <a href="usuarios.html">👥 Usuarios</a>
+        </nav>
+
+        <button id="btn-cerrar-sesion" class="btn btn-primary">Cerrar sesión</button>
+    </header>
+
+    <main class="page">
+
+        <div id="admin-cargando">Verificando sesión...</div>
+
+        <div id="admin-contenido" style="display:none;">
+
+            <h1>Inventario</h1>
+
+            <!-- ========================================
+                 STOCK ACTUAL
+            ========================================= -->
+
+            <div class="carrito-section-header">
+                <h2>Stock actual</h2>
+            </div>
+
+            <div id="stock-cargando">Cargando stock...</div>
+
+            <table id="tabla-stock" class="admin-tabla" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-stock"></tbody>
+            </table>
+
+
+            <!-- ========================================
+                 HISTORIAL DE MOVIMIENTOS
+            ========================================= -->
+
+            <div class="carrito-section-header" style="margin-top:32px;">
+                <h2>Historial de movimientos</h2>
+            </div>
+
+            <div id="movimientos-cargando">Cargando movimientos...</div>
+
+            <table id="tabla-movimientos" class="admin-tabla" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-movimientos"></tbody>
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         MODAL MOVIMIENTO (entrada / salida)
+    ====================================================== -->
+
+    <div id="modal-movimiento" class="admin-modal" style="display:none;">
+
+        <form id="form-movimiento" class="admin-modal-card">
+
+            <h2 id="modal-movimiento-titulo">Registrar movimiento</h2>
+
+            <input type="hidden" id="movimiento-producto-id">
+            <input type="hidden" id="movimiento-tipo">
+
+            <p id="movimiento-producto-nombre" style="font-weight:700;"></p>
+
+            <label for="movimiento-cantidad">Cantidad</label>
+            <input type="number" id="movimiento-cantidad" min="1" step="1" required>
+
+            <label for="movimiento-motivo">Motivo</label>
+            <input type="text" id="movimiento-motivo" placeholder="Ej: Compra a proveedor, Producto dañado...">
+
+            <div id="movimiento-error" class="login-error" style="display:none;"></div>
+
+            <div class="admin-modal-botones">
+                <button type="button" id="btn-cancelar-movimiento" class="btn">Cancelar</button>
+                <button type="submit" id="btn-guardar-movimiento" class="btn btn-primary">Registrar</button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script type="module" src="../../js/admin-inventario.js"></script>
+</body>
+</html>

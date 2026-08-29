@@ -1,0 +1,66 @@
+/* ============================================================
+   MITIENDA — CATÁLOGO DE PRODUCTOS
+   Requiere theme.css cargado antes que este archivo.
+   Usa estas clases en el HTML que genera tu JS al pintar
+   los productos traídos de Firestore.
+   ============================================================ */
+
+.catalogo-header{ margin-bottom: 18px; }
+
+/* Barra de búsqueda */
+.searchbar{
+  display:flex; align-items:center; gap:10px;
+  background:#fff; border:1.5px solid var(--linea); border-radius:24px;
+  padding:11px 16px; margin-bottom:16px;
+}
+.searchbar input{
+  border:none; outline:none; flex:1; font-size:14px; font-family:'Inter', sans-serif;
+  background:transparent;
+}
+.searchbar .icon{ color: var(--tinta-suave); }
+
+/* Fila de categorías (chips) */
+.chiprow{
+  display:flex; gap:8px; margin-bottom:18px; overflow-x:auto; padding-bottom:4px;
+}
+
+/* Grilla de productos: 2 columnas en móvil, 4 en escritorio */
+.grid-productos{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:16px;
+}
+@media (min-width: 720px){
+  .grid-productos{ grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Tarjeta de producto (una por cada doc de Firestore) */
+.gcard{
+  background:#fff; border:1px solid var(--linea); border-radius:12px;
+  padding:14px; display:flex; flex-direction:column; gap:6px;
+}
+.gcard .prod-imagen{
+  width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px;
+  background: var(--verde-suave);
+}
+.gcard .prod-emoji{ font-size:36px; text-align:center; margin-bottom:4px; }
+.gcard .prod-name{ font-size:14px; font-weight:700; color: var(--tinta); }
+.gcard .prod-stock{ font-size:11.5px; color: var(--tinta-suave); }
+.gcard .prod-stock.bajo{ color: var(--rojo); font-weight:700; }
+
+.gcard .addbtn{
+  width:100%; margin-top:6px; border:none; background: var(--verde); color:#fff;
+  font-family:'Baloo 2', sans-serif; font-weight:600; font-size:13px;
+  padding:9px; border-radius:8px; cursor:pointer; transition:.15s;
+}
+.gcard .addbtn:hover{ background: var(--verde-oscuro); }
+.gcard .addbtn:active{ transform: scale(.97); }
+.gcard .addbtn:disabled{
+  background: var(--linea); color: var(--tinta-suave); cursor:not-allowed;
+}
+
+/* Estado: sin resultados de búsqueda */
+.sin-resultados{
+  text-align:center; padding:40px 20px; color: var(--tinta-suave);
+}
+.sin-resultados strong{ color: var(--verde-oscuro); }

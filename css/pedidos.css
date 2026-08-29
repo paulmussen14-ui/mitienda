@@ -1,0 +1,161 @@
+/* ============================================================
+   MITIENDA — MIS PEDIDOS (pedidos.html)
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+.page-header {
+    margin-bottom: 22px;
+}
+
+.tag-pedidos {
+    display: inline-block;
+    background: var(--mostaza);
+    color: var(--verde-oscuro);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+
+/* ============================================================
+   MENSAJES (cargando / vacío)
+   ============================================================ */
+
+.mensaje {
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    padding: 50px 20px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+
+/* ============================================================
+   LISTA DE PEDIDOS
+   ============================================================ */
+
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* ============================================================
+   TARJETA DE PEDIDO
+   ============================================================ */
+
+.pedido-card {
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    padding: 18px;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.pedido-label {
+    display: block;
+    font-size: 11px;
+    color: var(--tinta-suave);
+}
+
+.pedido-id {
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+    color: var(--verde-oscuro);
+}
+
+.pedido-estado {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: var(--verde-suave);
+    color: var(--verde-oscuro);
+    text-transform: capitalize;
+}
+
+.pedido-estado.estado-pendiente { background: #FCEFD8; color: #8a5a0f; }
+.pedido-estado.estado-preparando { background: #DCEBFB; color: #1a4d8f; }
+.pedido-estado.estado-listo { background: #E1F3E7; color: #1F5C4A; }
+.pedido-estado.estado-entregado { background: var(--verde-suave); color: var(--verde-oscuro); }
+.pedido-estado.estado-cancelado { background: #FBEAE8; color: var(--rojo); }
+
+.pedido-tienda,
+.pedido-fecha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin-bottom: 8px;
+}
+
+.pedido-icon {
+    font-size: 18px;
+}
+
+.pedido-productos {
+    margin-top: 14px;
+    border-top: 1px solid var(--linea);
+    padding-top: 12px;
+}
+
+.pedido-productos h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.detalle-pedido {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.detalle-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.detalle-info {
+    display: flex;
+    gap: 8px;
+    color: var(--tinta);
+}
+
+.detalle-info span {
+    color: var(--tinta-suave);
+}
+
+.pedido-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--linea);
+    font-weight: 700;
+}
+
+.pedido-total strong {
+    font-family: 'Space Mono', monospace;
+    font-size: 17px;
+    color: var(--verde-oscuro);
+}

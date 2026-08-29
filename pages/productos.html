@@ -4,34 +4,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - MiTienda</title>
 
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Productos · MiTienda</title>
+
+    <link rel="stylesheet" href="../css/theme.css">
+    <link rel="stylesheet" href="../css/productos.css">
 </head>
 
 <body>
 
-    <header>
-        <nav>
-            <a href="../index.html">Inicio</a>
-            <a href="productos.html">Productos</a>
-            <a href="carrito.html">Carrito</a>
-            <a href="pedidos.html">Pedidos</a>
-            <a href="contacto.html">Contacto</a>
+    <!-- =====================================================
+         NAVEGACIÓN
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="navbar-brand">
+            <a href="../index.html">
+                🛒 MiTienda
+            </a>
+        </div>
+
+        <nav class="navtabs">
+
+            <a href="../index.html">
+                Inicio
+            </a>
+
+            <a class="active" id="nav-productos" href="#">
+                Productos
+            </a>
+
+            <a id="nav-carrito" href="#">
+                Carrito
+            </a>
+
+            <a id="nav-pedidos" href="#">
+                Pedidos
+            </a>
+
+            <a id="nav-contacto" href="#">
+                Contacto
+            </a>
+
         </nav>
+
     </header>
 
-    <main>
 
-        <h1>Productos</h1>
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
 
-        <div id="lista-productos">
-            Cargando productos...
+    <main class="page">
+
+        <!-- =================================================
+             INFORMACIÓN DE LA TIENDA
+        ================================================== -->
+
+        <section class="banner">
+
+            <span class="tag">
+                🏪 TIENDA
+            </span>
+
+            <h1 id="nombre-negocio">
+                Cargando tienda...
+            </h1>
+
+            <p id="descripcion-negocio">
+                Cargando información...
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             BUSCADOR
+        ================================================== -->
+
+        <div class="searchbar">
+
+            <span class="icon">
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="buscar-producto"
+                placeholder="Buscar productos..."
+                autocomplete="off"
+            >
+
         </div>
+
+
+        <!-- =================================================
+             CATEGORÍAS
+        ================================================== -->
+
+        <div class="chiprow">
+
+            <button
+                type="button"
+                class="chip on"
+                data-categoria="todos">
+
+                Todos
+
+            </button>
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="abarrotes">
+
+                🍚 Abarrotes
+
+            </button>
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="bebidas">
+
+                🥤 Bebidas
+
+            </button>
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="snacks">
+
+                🍪 Snacks
+
+            </button>
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="limpieza">
+
+                🧴 Limpieza
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             TÍTULO
+        ================================================== -->
+
+        <div class="section-title">
+
+            <h2>
+                Productos
+            </h2>
+
+            <span id="contador-productos">
+                Cargando...
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             CARGANDO
+        ================================================== -->
+
+        <div
+            id="productos-cargando"
+            class="infobox">
+
+            <p>
+                🔄 Cargando productos...
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             GRID
+        ================================================== -->
+
+        <section>
+
+            <div
+                id="grid-productos"
+                class="products-grid">
+            </div>
+
+
+            <!-- =============================================
+                 SIN RESULTADOS
+            ============================================== -->
+
+            <div
+                id="sin-resultados"
+                class="sin-resultados"
+                style="display:none;">
+
+                <h3>
+                    🛒 No encontramos productos
+                </h3>
+
+                <p>
+                    Esta tienda todavía no tiene productos
+                    disponibles.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PLANTILLA PRODUCTO
+        ================================================== -->
+
+        <template id="plantilla-producto">
+
+            <article class="gcard">
+
+                <!-- Imagen / Emoji -->
+
+                <div
+                    class="gcard-media"
+                    data-campo="imagen">
+
+                    🛒
+
+                </div>
+
+
+                <!-- Información -->
+
+                <div class="gcard-body">
+
+                    <h3 data-campo="nombre">
+                        Producto
+                    </h3>
+
+
+                    <p
+                        class="stock"
+                        data-campo="stock">
+
+                        Stock: 0
+
+                    </p>
+
+
+                    <div class="gcard-footer">
+
+                        <span
+                            class="price"
+                            data-campo="precio">
+
+                            S/ 0.00
+
+                        </span>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-accent"
+                            data-campo="boton">
+
+                            Agregar 🛒
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </template>
 
     </main>
 
-    <script type="module" src="../js/productos.js"></script>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/productos.js">
+    </script>
 
 </body>
 

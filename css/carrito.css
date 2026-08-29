@@ -1,0 +1,582 @@
+/* ============================================================
+   MITIENDA — CARRITO
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+
+.catalog-header {
+    margin-bottom: 24px;
+}
+
+.tag-carrito {
+    display: inline-block;
+
+    background: var(--mostaza);
+    color: var(--verde-oscuro);
+
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    margin-bottom: 10px;
+}
+
+
+/* ============================================================
+   MENSAJE DE CARGA
+   ============================================================ */
+
+.carrito-mensaje {
+    background: #fff;
+
+    border: 1px solid var(--linea);
+
+    border-radius: var(--radius);
+
+    padding: 45px 20px;
+
+    text-align: center;
+}
+
+.carrito-icono {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+
+.carrito-mensaje h3 {
+    margin-bottom: 5px;
+}
+
+
+/* ============================================================
+   CARRITO VACÍO
+   ============================================================ */
+
+.carrito-vacio {
+    background: #fff;
+
+    border: 1px solid var(--linea);
+
+    border-radius: var(--radius);
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    max-width: 650px;
+
+    margin: 20px auto;
+}
+
+.carrito-vacio-icon {
+    font-size: 58px;
+
+    width: 90px;
+    height: 90px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: var(--verde-suave);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carrito-vacio h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.carrito-vacio p {
+    max-width: 480px;
+    margin: 0 auto 20px;
+}
+
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.carrito-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        340px;
+
+    gap: 24px;
+
+    align-items: start;
+}
+
+
+/* ============================================================
+   PRODUCTOS
+   ============================================================ */
+
+.carrito-productos {
+    min-width: 0;
+}
+
+.carrito-section-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.carrito-section-header h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.carrito-section-header span {
+    font-size: 12px;
+    color: var(--tinta-suave);
+}
+
+
+/* ============================================================
+   LISTA
+   ============================================================ */
+
+.lista-carrito {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* ============================================================
+   ITEM
+   ============================================================ */
+
+.carrito-item {
+    background: #fff;
+
+    border: 1px solid var(--linea);
+
+    border-radius: 12px;
+
+    padding: 14px;
+
+    display: grid;
+
+    grid-template-columns:
+        72px
+        minmax(0, 1fr)
+        auto;
+
+    gap: 14px;
+
+    align-items: center;
+
+    transition: .2s;
+}
+
+.carrito-item:hover {
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, .06);
+}
+
+
+/* ============================================================
+   IMAGEN
+   ============================================================ */
+
+.carrito-item-imagen {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 10px;
+
+    background: var(--verde-suave);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+
+    overflow: hidden;
+}
+
+.carrito-item-imagen img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* ============================================================
+   INFORMACIÓN
+   ============================================================ */
+
+.carrito-item-info {
+    min-width: 0;
+}
+
+.carrito-item-info h3 {
+    font-family: 'Inter', sans-serif;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: var(--tinta);
+
+    margin: 0 0 5px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.carrito-precio {
+    margin: 0;
+
+    font-family: 'Space Mono', monospace;
+
+    font-size: 12px;
+
+    color: var(--tinta-suave);
+}
+
+
+/* ============================================================
+   CONTROLES DE CANTIDAD
+   ============================================================ */
+
+.carrito-controles {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+.cantidad-btn {
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid var(--linea);
+
+    border-radius: 8px;
+
+    background: var(--papel);
+
+    color: var(--verde-oscuro);
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    transition: .15s;
+}
+
+.cantidad-btn:hover {
+    background: var(--verde-suave);
+
+    border-color: var(--verde);
+}
+
+.cantidad-btn:active {
+    transform: scale(.94);
+}
+
+.cantidad {
+    min-width: 25px;
+
+    text-align: center;
+
+    font-family: 'Space Mono', monospace;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   TOTAL DEL ITEM
+   ============================================================ */
+
+.carrito-item-total {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 10px;
+}
+
+.carrito-item-total strong {
+    font-family: 'Space Mono', monospace;
+
+    font-size: 14px;
+
+    color: var(--verde-oscuro);
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   ELIMINAR
+   ============================================================ */
+
+.eliminar-btn {
+    border: none;
+
+    background: transparent;
+
+    color: var(--rojo);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    padding: 3px 0;
+}
+
+.eliminar-btn:hover {
+    text-decoration: underline;
+}
+
+
+/* ============================================================
+   RESUMEN
+   ============================================================ */
+
+.carrito-resumen {
+    background: #fff;
+
+    border: 1px solid var(--linea);
+
+    border-radius: var(--radius);
+
+    padding: 20px;
+
+    position: sticky;
+
+    top: 20px;
+}
+
+.carrito-resumen h2 {
+    font-size: 21px;
+
+    margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   LÍNEAS DEL RESUMEN
+   ============================================================ */
+
+.resumen-linea {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 12px;
+
+    font-size: 13px;
+
+    color: var(--tinta-suave);
+}
+
+.resumen-linea strong {
+    font-family: 'Space Mono', monospace;
+
+    color: var(--tinta);
+}
+
+.resumen-separador {
+    height: 1px;
+
+    background: var(--linea);
+
+    margin: 17px 0;
+}
+
+
+/* ============================================================
+   TOTAL
+   ============================================================ */
+
+.resumen-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+
+    font-weight: 700;
+}
+
+.resumen-total span {
+    font-size: 15px;
+}
+
+.resumen-total strong {
+    font-family: 'Space Mono', monospace;
+
+    font-size: 20px;
+
+    color: var(--verde-oscuro);
+}
+
+
+/* ============================================================
+   BOTÓN CONFIRMAR
+   ============================================================ */
+
+.carrito-resumen .btn {
+    min-height: 44px;
+}
+
+
+/* ============================================================
+   SEGUIR COMPRANDO
+   ============================================================ */
+
+.seguir-comprando {
+    display: block;
+
+    text-align: center;
+
+    margin-top: 14px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: var(--verde);
+}
+
+.seguir-comprando:hover {
+    color: var(--verde-oscuro);
+
+    text-decoration: underline;
+}
+
+
+/* ============================================================
+   RESPONSIVE — TABLET
+   ============================================================ */
+
+@media (max-width: 850px) {
+
+    .carrito-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .carrito-resumen {
+        position: static;
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — MÓVIL
+   ============================================================ */
+
+@media (max-width: 550px) {
+
+    .page {
+        padding:
+            18px 12px 50px;
+    }
+
+
+    .carrito-item {
+
+        grid-template-columns:
+            58px
+            minmax(0, 1fr);
+
+        gap: 12px;
+
+        padding: 12px;
+    }
+
+
+    .carrito-item-imagen {
+
+        width: 58px;
+        height: 58px;
+
+        font-size: 26px;
+    }
+
+
+    .carrito-item-total {
+
+        grid-column: 2;
+
+        flex-direction: row;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        width: 100%;
+    }
+
+
+    .carrito-item-info h3 {
+        font-size: 14px;
+    }
+
+
+    .carrito-section-header h2 {
+        font-size: 20px;
+    }
+
+
+    .carrito-vacio {
+        padding:
+            40px 18px;
+    }
+
+}

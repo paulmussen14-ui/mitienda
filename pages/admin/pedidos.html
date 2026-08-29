@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos · Panel admin · MiTienda</title>
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand"><h2 id="admin-nombre-negocio">🏪 Panel</h2></div>
+
+        <nav class="navtabs">
+            <a href="index.html">Inicio</a>
+            <a href="productos.html">📦 Productos</a>
+            <a class="active" href="pedidos.html">🧾 Pedidos</a>
+            <a href="inventario.html">📊 Inventario</a>
+            <a href="ventas.html">💰 Ventas</a>
+            <a href="usuarios.html">👥 Usuarios</a>
+        </nav>
+
+        <button id="btn-cerrar-sesion" class="btn btn-primary">Cerrar sesión</button>
+    </header>
+
+    <main class="page">
+
+        <div id="admin-cargando">Verificando sesión...</div>
+
+        <div id="admin-contenido" style="display:none;">
+
+            <div class="carrito-section-header">
+                <h1>Pedidos</h1>
+
+                <div class="chiprow" id="filtro-estados">
+                    <button type="button" class="chip on" data-estado="todos">Todos</button>
+                    <button type="button" class="chip" data-estado="Pendiente">Pendiente</button>
+                    <button type="button" class="chip" data-estado="Preparando">Preparando</button>
+                    <button type="button" class="chip" data-estado="Listo">Listo</button>
+                    <button type="button" class="chip" data-estado="Entregado">Entregado</button>
+                    <button type="button" class="chip" data-estado="Cancelado">Cancelado</button>
+                </div>
+            </div>
+
+            <div id="pedidos-cargando">Cargando pedidos...</div>
+
+            <div id="lista-pedidos-admin" class="pedidos-lista" style="display:none;"></div>
+
+            <div id="sin-pedidos" style="display:none;">
+                <p>No hay pedidos con este filtro.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         PLANTILLA PEDIDO
+    ====================================================== -->
+
+    <template id="plantilla-pedido-admin">
+
+        <article class="pedido-card admin-pedido-card">
+
+            <div class="pedido-header">
+                <div>
+                    <span class="pedido-label">Pedido</span>
+                    <strong data-campo="id" class="pedido-id">#000000</strong>
+                </div>
+                <span data-campo="estado" class="pedido-estado">Pendiente</span>
+            </div>
+
+            <div class="pedido-fecha">
+                📅 <span data-campo="fecha">-</span>
+            </div>
+
+            <div class="pedido-fecha">
+                👤 Cliente: <span data-campo="cliente"></span>
+            </div>
+
+            <div class="pedido-productos">
+                <h3>Productos</h3>
+                <div data-campo="detalle" class="detalle-pedido"></div>
+            </div>
+
+            <div class="pedido-total">
+                <span>Total</span>
+                <strong data-campo="total">S/ 0.00</strong>
+            </div>
+
+            <div class="admin-pedido-acciones" data-campo="acciones"></div>
+
+        </article>
+
+    </template>
+
+    <template id="plantilla-producto-pedido-admin">
+        <div class="detalle-item">
+            <div class="detalle-info">
+                <strong data-campo="nombre">Producto</strong>
+                <span data-campo="cantidad">x1</span>
+            </div>
+            <span data-campo="subtotal">S/ 0.00</span>
+        </div>
+    </template>
+
+
+    <script type="module" src="../../js/admin-pedidos.js"></script>
+</body>
+</html>

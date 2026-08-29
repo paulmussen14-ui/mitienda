@@ -1,0 +1,248 @@
+/* ============================================================
+   MITIENDA — PANEL ADMINISTRATIVO
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+
+/* ============================================================
+   NAVBAR ADMIN (extiende .navtabs de theme.css)
+   ============================================================ */
+
+.navbar #btn-cerrar-sesion {
+    margin-left: auto;
+}
+
+
+/* ============================================================
+   ESTADOS DE CARGA
+   ============================================================ */
+
+#admin-cargando,
+#productos-cargando,
+#pedidos-cargando,
+#stock-cargando,
+#movimientos-cargando,
+#ventas-cargando,
+#usuarios-cargando {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--tinta-suave);
+}
+
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+
+.admin-tabla {
+    width: 100%;
+    border-collapse: collapse;
+
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.admin-tabla thead {
+    background: var(--verde-suave);
+}
+
+.admin-tabla th {
+    text-align: left;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 13px;
+    color: var(--verde-oscuro);
+    padding: 12px 14px;
+}
+
+.admin-tabla td {
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--tinta);
+    border-top: 1px solid var(--linea);
+}
+
+.admin-tabla tbody tr:hover {
+    background: var(--papel);
+}
+
+.admin-tabla .prod-stock.bajo {
+    color: var(--rojo);
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   BOTONES DE ACCIÓN EN TABLA
+   ============================================================ */
+
+.btn-editar,
+.btn-eliminar {
+    border: 1.5px solid var(--linea);
+    background: #fff;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: .15s;
+    margin-right: 6px;
+}
+
+.btn-editar {
+    color: var(--verde-oscuro);
+}
+
+.btn-editar:hover {
+    background: var(--verde-suave);
+    border-color: var(--verde);
+}
+
+.btn-eliminar {
+    color: var(--rojo);
+}
+
+.btn-eliminar:hover {
+    background: #FBEAE8;
+    border-color: var(--rojo);
+}
+
+.btn-editar:disabled,
+.btn-eliminar:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+
+/* ============================================================
+   MODAL (crear/editar producto, usuario, movimiento)
+   ============================================================ */
+
+.admin-modal {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(18, 59, 47, .45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 100;
+}
+
+.admin-modal-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 26px;
+
+    width: 100%;
+    max-width: 460px;
+
+    max-height: 90vh;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-modal-card h2 {
+    margin-bottom: 10px;
+}
+
+.admin-modal-card label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--tinta);
+    margin-top: 10px;
+}
+
+.admin-modal-card input[type="text"],
+.admin-modal-card input[type="number"],
+.admin-modal-card input[type="email"],
+.admin-modal-card input[type="password"],
+.admin-modal-card select,
+.admin-modal-card textarea {
+    border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--tinta);
+    outline: none;
+    transition: .15s;
+}
+
+.admin-modal-card input:focus,
+.admin-modal-card select:focus,
+.admin-modal-card textarea:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-suave);
+}
+
+.admin-modal-card small {
+    font-size: 11px;
+    color: var(--tinta-suave);
+}
+
+.admin-modal-botones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+
+/* ============================================================
+   TARJETAS DE PEDIDO EN EL PANEL ADMIN
+   ============================================================ */
+
+.admin-pedido-card {
+    margin-bottom: 14px;
+}
+
+.admin-pedido-acciones {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   MENSAJES DE ERROR EN FORMULARIOS
+   ============================================================ */
+
+.login-error {
+    background: #FBEAE8;
+    border: 1px solid var(--rojo);
+    color: var(--rojo);
+    font-size: 12.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 720px) {
+
+    .admin-tabla {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .navbar .navtabs {
+        order: 3;
+        width: 100%;
+    }
+
+}

@@ -1,11 +1,12 @@
-// Import the functions you need from the SDKs you need
-//import { initializeApp } from "firebase/app";
+// Firebase App
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Firestore
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+// Authentication
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCykh1aBotBtpvHj1JddOU69P7rzh51pbY",
   authDomain: "mitienda-ee0e8.firebaseapp.com",
@@ -15,7 +16,13 @@ const firebaseConfig = {
   appId: "1:832792558075:web:3ff5afebd2a252a023735e"
 };
 
-// Initialize Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 
+// Firestore
 export const db = getFirestore(app);
+
+// Authentication
+export const auth = getAuth(app);
+
+export { firebaseConfig };

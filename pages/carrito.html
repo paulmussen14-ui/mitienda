@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi carrito · MiTienda</title>
+
+    <!-- Tema general -->
+    <link rel="stylesheet" href="../css/theme.css">
+
+    <!-- Diseño del carrito -->
+    <link rel="stylesheet" href="../css/carrito.css">
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="brand">
+
+            <h2>
+                🛒 MiTienda
+            </h2>
+
+        </div>
+
+
+        <nav class="navtabs">
+            <a href="../index.html">Inicio</a>
+            <a id="nav-productos" href="productos.html">Productos</a>
+            <a id="nav-carrito" class="active" href="carrito.html">🛒 Carrito</a>
+            <a id="nav-pedidos" href="pedidos.html">📦 Pedidos</a>
+            <a id="nav-contacto" href="contacto.html">Contacto</a>
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="page">
+
+
+        <!-- =================================================
+             ENCABEZADO
+        ================================================== -->
+
+        <section class="catalog-header">
+
+            <span class="tag-carrito">
+                🛍️ TU COMPRA
+            </span>
+
+
+            <h1>
+                Mi carrito
+            </h1>
+
+
+            <p id="subtitulo-carrito">
+                Revisa tus productos antes de realizar el pedido.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CARGANDO
+        ================================================== -->
+
+        <div
+            id="carrito-cargando"
+            class="carrito-mensaje">
+
+            <div class="carrito-icono">
+                🛒
+            </div>
+
+            <h3>
+                Cargando carrito...
+            </h3>
+
+            <p>
+                Estamos recuperando tus productos.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CARRITO VACÍO
+        ================================================== -->
+
+        <section
+            id="carrito-vacio"
+            class="carrito-vacio"
+            style="display:none;">
+
+            <div class="carrito-vacio-icon">
+                🛒
+            </div>
+
+
+            <h2>
+                Tu carrito está vacío
+            </h2>
+
+
+            <p>
+                Todavía no has agregado productos.
+                Explora nuestras tiendas y encuentra algo que te guste.
+            </p>
+
+
+            <a
+                href="../index.html"
+                class="btn btn-primary">
+
+                Explorar tiendas
+
+            </a>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CONTENEDOR PRINCIPAL
+        ================================================== -->
+
+        <section
+            id="contenido-carrito"
+            class="carrito-layout"
+            style="display:none;">
+
+
+
+            <!-- =============================================
+                 PRODUCTOS
+            ============================================== -->
+
+            <div class="carrito-productos">
+
+
+                <div class="carrito-section-header">
+
+                    <h2>
+                        Productos
+                    </h2>
+
+                    <span id="cantidad-items">
+                        0 productos
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="lista-carrito"
+                    class="lista-carrito">
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 RESUMEN
+            ============================================== -->
+
+            <aside
+                id="resumen-carrito"
+                class="carrito-resumen">
+
+
+                <h2>
+                    Resumen del pedido
+                </h2>
+
+
+                <div class="resumen-linea">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong id="subtotal-carrito">
+                        S/ 0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="resumen-linea">
+
+                    <span>
+                        Envío
+                    </span>
+
+                    <span>
+                        Por confirmar
+                    </span>
+
+                </div>
+
+
+                <div class="resumen-separador"></div>
+
+
+                <div class="resumen-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="total-carrito">
+                        S/ 0.00
+                    </strong>
+
+                </div>
+
+
+                <button
+                    id="btn-confirmar-pedido"
+                    type="button"
+                    class="btn btn-accent btn-full">
+
+                    Confirmar pedido →
+
+                </button>
+
+
+                <a
+                    href="../index.html"
+                    class="seguir-comprando">
+
+                    ← Seguir comprando
+
+                </a>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         TEMPLATE ITEM CARRITO
+    ====================================================== -->
+
+    <template id="plantilla-item-carrito">
+
+        <article class="carrito-item">
+
+
+            <!-- Imagen / icono -->
+
+            <div
+                class="carrito-item-imagen"
+                data-campo="imagen">
+
+                🛒
+
+            </div>
+
+
+
+            <!-- Información -->
+
+            <div class="carrito-item-info">
+
+
+                <h3 data-campo="nombre">
+                    Producto
+                </h3>
+
+
+                <p class="carrito-precio">
+
+                    S/
+                    <span data-campo="precio">
+                        0.00
+                    </span>
+
+                </p>
+
+
+
+                <!-- Controles -->
+
+                <div class="carrito-controles">
+
+
+                    <button
+                        type="button"
+                        class="cantidad-btn"
+                        data-campo="menos">
+
+                        −
+
+                    </button>
+
+
+                    <span
+                        class="cantidad"
+                        data-campo="cantidad">
+
+                        1
+
+                    </span>
+
+
+                    <button
+                        type="button"
+                        class="cantidad-btn"
+                        data-campo="mas">
+
+                        +
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- Subtotal -->
+
+            <div class="carrito-item-total">
+
+                <strong
+                    data-campo="subtotal">
+
+                    S/ 0.00
+
+                </strong>
+
+
+                <button
+                    type="button"
+                    class="eliminar-btn"
+                    data-campo="eliminar">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </article>
+
+    </template>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../js/carrito.js">
+    </script>
+
+</body>
+
+</html>

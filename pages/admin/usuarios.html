@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios · Panel admin · MiTienda</title>
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand"><h2 id="admin-nombre-negocio">🏪 Panel</h2></div>
+
+        <nav class="navtabs">
+            <a href="index.html">Inicio</a>
+            <a href="productos.html">📦 Productos</a>
+            <a href="pedidos.html">🧾 Pedidos</a>
+            <a href="inventario.html">📊 Inventario</a>
+            <a href="ventas.html">💰 Ventas</a>
+            <a class="active" href="usuarios.html">👥 Usuarios</a>
+        </nav>
+
+        <button id="btn-cerrar-sesion" class="btn btn-primary">Cerrar sesión</button>
+    </header>
+
+    <main class="page">
+
+        <div id="admin-cargando">Verificando sesión...</div>
+
+        <div id="admin-contenido" style="display:none;">
+
+            <div class="carrito-section-header">
+                <h1>Usuarios</h1>
+                <button id="btn-nuevo-usuario" class="btn btn-accent">+ Nuevo usuario</button>
+            </div>
+
+            <div id="usuarios-cargando">Cargando usuarios...</div>
+
+            <table id="tabla-usuarios" class="admin-tabla" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-usuarios"></tbody>
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         MODAL USUARIO (crear / editar)
+    ====================================================== -->
+
+    <div id="modal-usuario" class="admin-modal" style="display:none;">
+
+        <form id="form-usuario" class="admin-modal-card">
+
+            <h2 id="modal-usuario-titulo">Nuevo usuario</h2>
+
+            <input type="hidden" id="usuario-uid">
+
+            <label for="usuario-nombre">Nombre completo</label>
+            <input type="text" id="usuario-nombre" required>
+
+            <label for="usuario-correo">Correo</label>
+            <input type="email" id="usuario-correo" required autocomplete="off">
+
+            <div id="grupo-contrasena">
+                <label for="usuario-contrasena">Contraseña</label>
+                <input type="password" id="usuario-contrasena" minlength="6" autocomplete="new-password">
+                <small>Mínimo 6 caracteres. Solo aplica al crear un usuario nuevo.</small>
+            </div>
+
+            <label for="usuario-rol">Rol</label>
+            <select id="usuario-rol">
+                <option value="admin">Administrador</option>
+                <option value="empleado">Empleado</option>
+            </select>
+
+            <label>
+                <input type="checkbox" id="usuario-activo" checked>
+                Usuario activo
+            </label>
+
+            <div id="usuario-error" class="login-error" style="display:none;"></div>
+
+            <div class="admin-modal-botones">
+                <button type="button" id="btn-cancelar-usuario" class="btn">Cancelar</button>
+                <button type="submit" id="btn-guardar-usuario" class="btn btn-primary">Guardar</button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script type="module" src="../../js/admin-usuarios.js"></script>
+</body>
+</html>

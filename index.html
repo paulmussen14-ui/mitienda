@@ -5,52 +5,332 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MiTienda</title>
+    <title>MiTienda · Marketplace</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Tema general -->
+    <link rel="stylesheet" href="css/theme.css">
+
+    <!-- Diseño del marketplace -->
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
 
-    <!-- Navegación -->
-    <header>
-        <nav>
-            <a href="index.html">Inicio</a>
-            <a href="pages/productos.html">Productos</a>
-            <a href="pages/carrito.html">Carrito</a>
-            <a href="pages/pedidos.html">Pedidos</a>
-            <a href="pages/contacto.html">Contacto</a>
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="brand">
+
+            <h2>
+                🛒 MiTienda
+            </h2>
+
+        </div>
+
+
+        <nav class="navtabs">
+
+            <a
+                class="active"
+                href="index.html">
+                Inicio
+            </a>
+
+            <a href="pages/carrito.html">
+                🛒 Carrito
+            </a>
+
+            <a href="pages/pedidos.html">
+                📦 Pedidos
+            </a>
+            
+            <a href="pages/admin/login.html">
+                🔐 Iniciar sesión
+            </a>
+
         </nav>
+
     </header>
 
-    <!-- Contenido principal -->
-    <main>
 
-        <section>
-            <h1>Bienvenido a MiTienda</h1>
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main class="page">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="banner">
+
+            <span class="tag">
+                🛍️ MARKETPLACE
+            </span>
+
+
+            <h1>
+                Compra en tus tiendas favoritas
+            </h1>
+
 
             <p>
-                Tu tienda online de confianza.
+                Encuentra bodegas y negocios, explora sus
+                productos y realiza tus pedidos desde MiTienda.
             </p>
 
-            <a href="pages/productos.html">
-                Ver productos
-            </a>
         </section>
 
-        <!-- Prueba de Firebase -->
-        <section>
-            <h2>Productos disponibles</h2>
 
-            <div id="productos">
-                Cargando productos...
-            </div>
+
+        <!-- =================================================
+             BUSCADOR
+        ================================================== -->
+
+        <div class="searchbar">
+
+            <span class="icon">
+                🔎
+            </span>
+
+
+            <input
+                type="text"
+                id="buscar-negocio"
+                placeholder="¿Qué tienda estás buscando?"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+
+        <!-- =================================================
+             CATEGORÍAS
+        ================================================== -->
+
+        <div class="chiprow">
+
+            <button
+                type="button"
+                class="chip on"
+                data-categoria="todos">
+
+                Todas
+
+            </button>
+
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="bodega">
+
+                🏪 Bodegas
+
+            </button>
+
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="abarrotes">
+
+                🍚 Abarrotes
+
+            </button>
+
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="bebidas">
+
+                🥤 Bebidas
+
+            </button>
+
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="snacks">
+
+                🍪 Snacks
+
+            </button>
+
+
+            <button
+                type="button"
+                class="chip"
+                data-categoria="limpieza">
+
+                🧴 Limpieza
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TÍTULO
+        ================================================== -->
+
+        <div class="section-title">
+
+            <h2>
+                Tiendas disponibles
+            </h2>
+
+
+            <span id="contador-tiendas">
+                Cargando...
+            </span>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CARGANDO
+        ================================================== -->
+
+        <div
+            id="tiendas-cargando"
+            class="infobox">
+
+            <p>
+                🔄 Buscando tiendas disponibles...
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             GRID DE TIENDAS
+        ================================================== -->
+
+        <section
+            id="grid-tiendas"
+            class="grid-tiendas">
         </section>
+
+
+
+        <!-- =================================================
+             SIN TIENDAS
+        ================================================== -->
+
+        <div
+            id="sin-tiendas"
+            class="sin-resultados"
+            style="display:none;">
+
+            <h3>
+                🏪 No encontramos tiendas
+            </h3>
+
+
+            <p>
+                Prueba con otro nombre o categoría.
+            </p>
+
+        </div>
+
 
     </main>
 
-    <!-- JavaScript -->
-    <script type="module" src="./js/productos.js"></script>
+
+
+    <!-- =====================================================
+         TEMPLATE DE TIENDA
+    ====================================================== -->
+
+    <template id="plantilla-tienda">
+
+        <article class="tienda-card">
+
+
+            <!-- LOGO -->
+
+            <div class="tienda-logo badge-circle">
+
+                <span data-campo="iniciales">
+                    MT
+                </span>
+
+            </div>
+
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="tienda-info">
+
+
+                <h3 data-campo="nombre">
+                    Tienda
+                </h3>
+
+
+                <p data-campo="descripcion">
+                    Compra productos en esta tienda.
+                </p>
+
+
+
+                <!-- DATOS -->
+
+                <div class="tienda-meta">
+
+                    <span data-campo="direccion">
+                        📍 Dirección no disponible
+                    </span>
+
+
+                    <span data-campo="horario">
+                        🕐 Horario no disponible
+                    </span>
+
+                </div>
+
+
+
+                <!-- BOTÓN -->
+
+                <a
+                    href="#"
+                    data-campo="boton"
+                    class="btn btn-primary btn-full">
+
+                    Ver tienda →
+
+                </a>
+
+            </div>
+
+        </article>
+
+    </template>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="./js/home.js">
+    </script>
 
 </body>
 

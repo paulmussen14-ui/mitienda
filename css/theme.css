@@ -1,0 +1,149 @@
+/* ============================================================
+   MITIENDA — TEMA VISUAL BASE
+   Paleta: verde toldo + mostaza | Tipografía: Baloo 2 + Inter
+   Importar este archivo en TODAS las páginas, antes de los CSS
+   específicos de cada página (catalogo.css, carrito.css, etc.)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --verde: #1F5C4A;
+  --verde-oscuro: #123B2F;
+  --verde-suave: #E7F1EC;
+  --mostaza: #E8A23D;
+  --mostaza-oscuro: #B97D26;
+  --rojo: #D6483F;
+  --papel: #FBF8F2;
+  --tinta: #2B2620;
+  --tinta-suave: #6b6459;
+  --linea: #E4DDCB;
+  --blanco: #ffffff;
+  --radius: 14px;
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+
+body{
+  background: #EFEAE0;
+  font-family: 'Inter', sans-serif;
+  color: var(--tinta);
+}
+
+h1, h2, h3{
+  font-family: 'Baloo 2', sans-serif;
+  margin: 0 0 6px 0;
+  color: var(--verde-oscuro);
+}
+p{
+  margin: 0 0 10px 0;
+  line-height: 1.5;
+  color: var(--tinta-suave);
+  font-size: 14px;
+}
+a{ color: var(--verde); text-decoration: none; }
+
+/* ---------- Contenedor general de página ---------- */
+.page{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px 16px;
+}
+
+/* ---------- HEADER / NAV (igual en todas las páginas) ---------- */
+.topbar{
+  background: var(--verde-oscuro);
+  color: #fff;
+  padding: 10px 20px;
+}
+.topbar .browserline{
+  display:flex; align-items:center; gap:10px; font-family:'Space Mono', monospace;
+  font-size: 12px; color:#EAF3EE; opacity:.85;
+}
+
+.navbar{
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap: wrap; gap: 10px;
+  background:#fff; border-bottom:1px solid var(--linea);
+  padding: 12px 20px;
+}
+.navbar .roleswitch{
+  display:flex; gap:6px; background:var(--verde-suave); border-radius:30px; padding:4px;
+}
+.navbar .roleswitch button{
+  border:none; background:transparent; padding:8px 14px; border-radius:24px;
+  font-family:'Baloo 2', sans-serif; font-weight:600; font-size:13px;
+  color: var(--verde); cursor:pointer; transition:.2s;
+}
+.navbar .roleswitch button.active{
+  background: var(--verde); color:#fff;
+  box-shadow: 0 4px 10px -2px rgba(18,59,47,0.5);
+}
+.navtabs{ display:flex; gap:8px; flex-wrap:wrap; }
+.navtabs a{
+  border:1.5px solid var(--linea); background:#fff; padding:8px 16px;
+  border-radius:20px; font-size:13px; font-weight:600; color:var(--tinta-suave);
+}
+.navtabs a.active{ border-color:var(--verde); background:var(--verde); color:#fff; }
+
+/* ---------- Botones reutilizables ---------- */
+.btn{
+  border:none; border-radius:10px; font-family:'Baloo 2', sans-serif; font-weight:600;
+  cursor:pointer; transition:.15s; font-size:14px; padding:10px 18px;
+}
+.btn:active{ transform: scale(.97); }
+.btn-primary{ background: var(--verde); color:#fff; }
+.btn-primary:hover{ background: var(--verde-oscuro); }
+.btn-accent{
+  background: var(--mostaza); color:#3d2a05;
+  box-shadow: 0 8px 16px -6px rgba(232,162,61,.6);
+}
+.btn-accent:hover{ background: var(--mostaza-oscuro); color:#fff; }
+.btn-full{ width:100%; }
+
+/* ---------- Etiqueta de precio (price tag) ---------- */
+.price-tag{
+  font-family:'Space Mono', monospace;
+  background: var(--mostaza); color:#3d2a05;
+  font-weight:700; font-size:13px;
+  padding:4px 10px; border-radius:6px;
+  display:inline-block;
+  transform: rotate(-2deg);
+  box-shadow: 0 3px 6px rgba(0,0,0,.12);
+}
+
+/* ---------- Chip / etiqueta de categoría ---------- */
+.chip{
+  background:#fff; border:1.5px solid var(--linea); color:var(--tinta);
+  font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:20px;
+  white-space:nowrap; cursor:pointer;
+}
+.chip.on{ background: var(--mostaza); border-color: var(--mostaza-oscuro); color:#3d2a05; }
+
+/* ---------- Utilidades ---------- */
+.section-title{
+  display:flex; justify-content:space-between; align-items:baseline;
+  margin: 22px 0 12px 0;
+}
+.section-title span{ font-size:12px; color:var(--mostaza-oscuro); font-weight:700; cursor:pointer; }
+
+.badge-circle{
+  border-radius:50%; background:#fff; color:var(--verde);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Baloo 2', sans-serif; font-weight:800;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+/* ---------- Imagen real de producto (cuando el campo "imagen" no está vacío) ---------- */
+.prod-emoji.has-img{
+  font-size: 0;
+  line-height: 0;
+}
+.prod-emoji.has-img img{
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
