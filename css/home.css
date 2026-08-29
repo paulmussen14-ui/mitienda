@@ -2,6 +2,27 @@
    MITIENDA — HOME / MARKETPLACE
    Requiere theme.css cargado antes que este archivo.
    Los colores de cada tienda vienen dinámicamente desde Firebase.
+
+   ────────────────────────────────────────────────────────────
+   ESTRUCTURA REAL DE LA TARJETA (según index.html):
+
+     <article class="tienda-card">
+        [<img class="tienda-portada">]   ← solo si hay banner, la mete home.js
+        <div class="tienda-logo badge-circle">...</div>
+        <div class="tienda-info">
+           <h3>...</h3>
+           <p>...</p>
+           <div class="tienda-meta">...</div>
+           <a class="btn btn-primary btn-full">...</a>
+        </div>
+     </article>
+
+   Es decir: NO existe un wrapper ".tienda-body" en el HTML.
+   La versión anterior de este archivo tenía reglas apuntando a
+   esa clase inexistente (padding, layout en fila, margin-top:
+   auto del botón) — por eso no se aplicaban y el logo/texto
+   quedaban pegados a los bordes de la tarjeta. Esta versión
+   apunta a los hijos reales: .tienda-logo y .tienda-info.
    ============================================================ */
 
 
@@ -11,10 +32,15 @@
 
 .banner {
     background:
+        radial-gradient(
+            circle at 85% -10%,
+            rgba(255,255,255,.16),
+            transparent 55%
+        ),
         repeating-linear-gradient(
             115deg,
-            var(--verde) 0 18px,
-            var(--verde-oscuro) 18px 36px
+            var(--verde) 0 22px,
+            var(--verde-oscuro) 22px 44px
         );
 
     border-radius: var(--radius);
@@ -23,6 +49,8 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;
+
+    box-shadow: 0 12px 28px rgba(31, 92, 74, .18);
 }
 
 .banner .tag {
@@ -32,9 +60,11 @@
     font-family: 'Space Mono', monospace;
     font-size: 11px;
     font-weight: 700;
+    letter-spacing: .04em;
     padding: 5px 12px;
     border-radius: 20px;
     margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
 }
 
 .banner h1 {
@@ -43,6 +73,7 @@
     line-height: 1.15;
     margin-bottom: 8px;
     max-width: 600px;
+    text-shadow: 0 1px 12px rgba(0,0,0,.08);
 }
 
 .banner p {
@@ -69,6 +100,8 @@
     padding: 12px 17px;
     margin-bottom: 18px;
 
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
+
     transition: .2s;
 }
 
@@ -76,7 +109,8 @@
     border-color: var(--verde);
 
     box-shadow:
-        0 0 0 3px var(--verde-suave);
+        0 0 0 3px var(--verde-suave),
+        0 4px 12px rgba(0,0,0,.05);
 }
 
 .searchbar .icon {
@@ -137,6 +171,13 @@
     white-space: nowrap;
 
     cursor: pointer;
+
+    transition: .15s;
+}
+
+.chip:hover {
+    border-color: var(--verde);
+    transform: translateY(-1px);
 }
 
 .chip.on {
@@ -145,6 +186,8 @@
     border-color: var(--mostaza-oscuro);
 
     color: #3d2a05;
+
+    box-shadow: 0 3px 8px rgba(232, 162, 61, .35);
 }
 
 
@@ -167,10 +210,15 @@
 
 .section-title span {
     font-family: 'Space Mono', monospace;
-
     font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .03em;
 
-    color: var(--tinta-suave);
+    color: var(--verde-oscuro);
+    background: var(--verde-suave);
+
+    padding: 4px 10px;
+    border-radius: 20px;
 }
 
 
@@ -207,6 +255,14 @@
 
 /* ============================================================
    TARJETA DE TIENDA
+
+   .tienda-card es flex-column. Sus hijos reales son:
+   [.tienda-portada opcional] → .tienda-logo → .tienda-info
+
+   .tienda-info también es flex-column con flex:1, así absorbe
+   todo el espacio vertical libre y el botón (con
+   margin-top:auto) siempre queda pegado al fondo de la
+   tarjeta — sin importar cuánto texto tenga cada negocio.
    ============================================================ */
 
 .tienda-card {
@@ -229,11 +285,12 @@
 
     border-radius: var(--radius);
 
-    padding: 18px;
-
     display: flex;
+    flex-direction: column;
 
-    gap: 15px;
+    overflow: hidden; /* para que la portada respete las esquinas redondeadas */
+
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
 
     transition:
         transform .2s,
@@ -245,12 +302,27 @@
     transform: translateY(-3px);
 
     box-shadow:
-        0 10px 24px rgba(0,0,0,.08);
+        0 12px 26px rgba(0,0,0,.09);
+}
+
+
+/* ============================================================
+   PORTADA (banner superior, si existe)
+   La inserta home.js como primer hijo de .tienda-card cuando
+   la tienda tiene campo "banner".
+   ============================================================ */
+
+.tienda-portada {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
 }
 
 
 /* ============================================================
    LOGO / INICIALES
+   Hijo directo de .tienda-card (no hay wrapper .tienda-body).
    ============================================================ */
 
 .tienda-logo {
@@ -276,21 +348,13 @@
     justify-content: center;
 
     font-family: 'Baloo 2', sans-serif;
-}
 
-.tienda-card {
-    overflow: hidden; /* para que la portada respete las esquinas redondeadas */
-}
+    /* Espacio respecto al borde de la tarjeta (antes no tenía
+       ningún margen y quedaba pegado a la esquina). */
+    margin: 18px 0 12px 18px;
 
-.tienda-portada {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    display: block;
+    transition: margin-top .2s;
 }
-/* ============================================================
-   LOGO DE LA TIENDA
-   ============================================================ */
 
 .tienda-logo img {
     width: 100%;
@@ -300,14 +364,31 @@
     display: block;
 }
 
+/* Si la tienda tiene portada, el logo "flota" sobre el borde
+   inferior de la foto, como una foto de perfil — separa mejor
+   foto / marca / texto y le da más carácter a la tarjeta. */
+.tienda-card:has(.tienda-portada) > .tienda-logo {
+    margin-top: -32px;
+    border: 3px solid #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,.18);
+}
+
 
 /* ============================================================
    INFORMACIÓN
+   Hijo directo de .tienda-card, contiene título, descripción,
+   meta y botón. flex:1 + flex-column para poder anclar el
+   botón abajo con margin-top:auto.
    ============================================================ */
 
 .tienda-info {
+    display: flex;
+    flex-direction: column;
+
     flex: 1;
     min-width: 0;
+
+    padding: 0 18px 18px;
 }
 
 .tienda-info h3 {
@@ -324,6 +405,13 @@
     line-height: 1.4;
 
     margin-bottom: 9px;
+
+    /* Limita la descripción a 2 líneas para que el largo del
+       texto no descuadre la altura de las tarjetas vecinas. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 
@@ -352,19 +440,24 @@
 
 /* ============================================================
    BOTÓN DE TIENDA
+   Vive dentro de .tienda-info (no directo de .tienda-card).
+   Como .tienda-info es flex-column + flex:1, margin-top:auto
+   aquí empuja el botón hasta el fondo de la tarjeta.
+   No le ponemos width/margin horizontal: .btn-full (de
+   theme.css) ya lo hace al 100% del ancho de .tienda-info,
+   que ya está separado del borde por el padding de arriba.
    ============================================================ */
 
-.tienda-card .btn {
+.tienda-info .btn {
 
-    display: block;
-
-    width: 100%;
+    margin-top: auto;
 
     text-align: center;
 
-    padding: 8px 12px;
+    padding: 9px 12px;
 
     font-size: 13px;
+    font-weight: 600;
 
     background:
         var(--tienda-primario, var(--verde));
@@ -379,12 +472,14 @@
     transition: .2s;
 }
 
-.tienda-card .btn:hover {
+.tienda-info .btn:hover {
 
     background:
         var(--tienda-acento, var(--mostaza));
 
     color: #fff;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
 }
 
 
@@ -394,13 +489,34 @@
 
 #tiendas-cargando {
 
-    margin-top: 10px;
+    margin-top: 30px;
 
     text-align: center;
+
+    color: var(--tinta-suave);
 }
 
 #tiendas-cargando p {
     margin: 0;
+    font-size: 13.5px;
+}
+
+#tiendas-cargando::before {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto 12px;
+
+    border: 3px solid var(--verde-suave);
+    border-top-color: var(--verde);
+    border-radius: 50%;
+
+    animation: mt-girar .7s linear infinite;
+}
+
+@keyframes mt-girar {
+    to { transform: rotate(360deg); }
 }
 
 
@@ -412,9 +528,17 @@
 
     text-align: center;
 
-    padding: 45px 20px;
+    padding: 50px 20px;
 
     color: var(--tinta-suave);
+}
+
+.sin-resultados::before {
+    content: "🔍";
+    display: block;
+    font-size: 34px;
+    margin-bottom: 10px;
+    opacity: .6;
 }
 
 .sin-resultados h3 {
@@ -422,10 +546,40 @@
     font-size: 22px;
 
     margin-bottom: 5px;
+
+    color: var(--tinta);
 }
 
 .sin-resultados p {
     margin: 0;
+}
+
+
+/* ============================================================
+   ENTRADA SUAVE DE LAS TARJETAS
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+
+    .tienda-card {
+        animation: mt-entrada .35s ease both;
+    }
+
+    .grid-tiendas .tienda-card:nth-child(2) { animation-delay: .05s; }
+    .grid-tiendas .tienda-card:nth-child(3) { animation-delay: .1s; }
+    .grid-tiendas .tienda-card:nth-child(n+4) { animation-delay: .15s; }
+
+    @keyframes mt-entrada {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
 }
 
 
@@ -447,17 +601,22 @@
         font-size: 27px;
     }
 
-    .tienda-card {
-        padding: 14px;
-        gap: 12px;
-    }
-
     .tienda-logo {
         width: 54px;
         height: 54px;
         min-width: 54px;
 
         font-size: 17px;
+
+        margin: 14px 0 10px 14px;
+    }
+
+    .tienda-card:has(.tienda-portada) > .tienda-logo {
+        margin-top: -26px;
+    }
+
+    .tienda-info {
+        padding: 0 14px 14px;
     }
 
     .tienda-info h3 {

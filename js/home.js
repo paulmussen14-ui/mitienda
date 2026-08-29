@@ -197,6 +197,18 @@ function aplicarFiltros() {
 
 
 /* ============================================================
+   ¿ES UNA IMAGEN VÁLIDA?
+   Descarta vacíos y restos de datos mal cargados (ej. el
+   texto literal `""` que quedó guardado por error al editar
+   un documento a mano en Firestore Console).
+   ============================================================ */
+
+function esImagenValida(valor) {
+    return typeof valor === "string" && valor.trim() !== "" && valor.trim() !== '""';
+}
+
+
+/* ============================================================
    CREAR TARJETA DE TIENDA
    ============================================================ */
 
@@ -342,38 +354,34 @@ function crearTarjetaTienda(tienda) {
 
     /* ========================================================
        LOGO REAL
+       Los campos reales en Firestore son "logo" y "banner"
+       (no "logoUrl" / "portadaUrl").
        ======================================================== */
 
-if (
-    tienda.logoUrl &&
-    tienda.logoUrl.trim() !== ""
-) {
+    if (esImagenValida(tienda.logo)) {
 
-    iniciales.innerHTML = `
-        <img
-            src="${tienda.logoUrl}"
-            alt="${tienda.nombre || "Tienda"}"
-        >
-    `;
+        iniciales.innerHTML = `
+            <img
+                src="${tienda.logo}"
+                alt="${tienda.nombre || "Tienda"}"
+            >
+        `;
 
-}
+    }
 
-/* ========================================================
-   PORTADA (banner superior, si existe)
-   ======================================================== */
+    /* ========================================================
+       PORTADA (banner superior, si existe)
+       ======================================================== */
 
-if (
-    tienda.portadaUrl &&
-    tienda.portadaUrl.trim() !== ""
-) {
+    if (esImagenValida(tienda.banner)) {
 
-    const portada = document.createElement("img");
-    portada.src = tienda.portadaUrl;
-    portada.alt = `Portada de ${tienda.nombre || "la tienda"}`;
-    portada.className = "tienda-portada";
+        const portada = document.createElement("img");
+        portada.src = tienda.banner;
+        portada.alt = `Portada de ${tienda.nombre || "la tienda"}`;
+        portada.className = "tienda-portada";
 
-    tarjeta.insertBefore(portada, tarjeta.firstChild);
-}
+        tarjeta.insertBefore(portada, tarjeta.firstChild);
+    }
 
 
     /* ========================================================
