@@ -16,26 +16,35 @@ function esImagenValida(valor) {
 function footerGenerico() {
 
     return `
-        <div class="footer-contenido">
+        <div class="footer-inner">
 
-            <div class="footer-marca">
-                <div>
-                    <h3>🛒 MiTienda</h3>
-                    <p>El marketplace de los negocios de tu barrio.</p>
+            <div class="footer-top">
+
+                <div class="footer-marca">
+                    <div>
+                        <h3>🛒 MiTienda</h3>
+                        <p>El marketplace de los negocios de tu barrio.</p>
+                    </div>
                 </div>
+
+                <div class="footer-columnas">
+                    <div class="footer-columna">
+                        <h4>Navegación</h4>
+                        <ul>
+                            <li><a href="/index.html">Inicio</a></li>
+                            <li><a href="/pages/cliente/tienda.html">Tiendas</a></li>
+                            <li><a href="/pages/cliente/registro.html">Crear cuenta</a></li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
 
-            <nav class="footer-links">
-                <a href="/index.html">Inicio</a>
-                <a href="/pages/cliente/tiendas.html">Tiendas</a>
-                <a href="/pages/cliente/registro.html">Crear cuenta</a>
-            </nav>
+            <div class="footer-bottom">
+                <span>© ${new Date().getFullYear()} <strong>MiTienda</strong>. Todos los derechos reservados.</span>
+            </div>
 
         </div>
-
-        <p class="footer-copy">
-            © ${new Date().getFullYear()} MiTienda. Todos los derechos reservados.
-        </p>
     `;
 
 }
@@ -60,26 +69,36 @@ function footerTienda(negocio) {
     }
 
     return `
-        <div class="footer-contenido">
+        <div class="footer-inner">
 
-            <div class="footer-marca">
-                ${logoHtml}
-                <div>
-                    <h3>${nombre}</h3>
-                    <p>${direccion}</p>
+            <div class="footer-top">
+
+                <div class="footer-marca">
+                    ${logoHtml}
+                    <div>
+                        <h3>${nombre}</h3>
+                        <p>${direccion}</p>
+                    </div>
                 </div>
+
+                <div class="footer-columnas">
+                    <div class="footer-columna">
+                        <h4>Horario</h4>
+                        <ul>
+                            <li><span>🕐 ${horario}</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <a class="footer-cta" href="contacto.html?negocio=${negocioParam}">✉️ Contáctanos</a>
+
             </div>
 
-            <div class="footer-datos">
-                <span>🕐 ${horario}</span>
-                <a href="contacto.html?negocio=${negocioParam}">✉️ Contáctanos</a>
+            <div class="footer-bottom">
+                <span>© ${new Date().getFullYear()} <strong>${nombre}</strong> · Impulsado por MiTienda</span>
             </div>
 
         </div>
-
-        <p class="footer-copy">
-            © ${new Date().getFullYear()} ${nombre} · Impulsado por MiTienda
-        </p>
     `;
 
 }

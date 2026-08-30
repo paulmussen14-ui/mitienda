@@ -84,6 +84,34 @@ function configurarEncabezado() {
 
     }
 
+
+    const direccionElemento =
+        document.getElementById(
+            "info-direccion"
+        );
+
+    if (direccionElemento) {
+
+        direccionElemento.textContent =
+            negocioActual.direccion ||
+            "Dirección no disponible";
+
+    }
+
+
+    const horarioElemento =
+        document.getElementById(
+            "info-horario"
+        );
+
+    if (horarioElemento) {
+
+        horarioElemento.textContent =
+            negocioActual.horario ||
+            "Horario no disponible";
+
+    }
+
 }
 
 

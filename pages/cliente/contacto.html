@@ -8,6 +8,7 @@
     <title>Contacto · MiTienda</title>
 
     <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/shared/tienda-indicador.css">
     <link rel="stylesheet" href="../../css/shared/footer.css">
     <link rel="stylesheet" href="../../css/cliente/contacto.css">
 
@@ -49,13 +50,15 @@
 
     </header>
 
+    <div id="tienda-indicador"></div>
+
 
     <main class="page">
 
         <section class="contacto-hero">
 
             <span class="tag">
-                ✉️ CONTACTO
+                ✉️ Contacto
             </span>
 
             <h1 id="nombre-negocio">
@@ -71,7 +74,39 @@
         </section>
 
 
-        <section class="contacto-formulario">
+        <section class="contacto-grid">
+
+            <aside class="contacto-info">
+
+                <h2>Datos de la tienda</h2>
+
+                <div class="contacto-dato">
+                    <span class="contacto-dato-icono">📍</span>
+                    <div>
+                        <strong>Dirección</strong>
+                        <p id="info-direccion">Cargando…</p>
+                    </div>
+                </div>
+
+                <div class="contacto-dato">
+                    <span class="contacto-dato-icono">🕐</span>
+                    <div>
+                        <strong>Horario</strong>
+                        <p id="info-horario">Cargando…</p>
+                    </div>
+                </div>
+
+                <div class="contacto-dato">
+                    <span class="contacto-dato-icono">⏱️</span>
+                    <div>
+                        <strong>Tiempo de respuesta</strong>
+                        <p>Normalmente respondemos el mismo día.</p>
+                    </div>
+                </div>
+
+            </aside>
+
+            <div class="contacto-formulario">
 
             <form id="form-contacto">
 
@@ -154,6 +189,8 @@
 
             </div>
 
+            </div>
+
         </section>
 
     </main>
@@ -165,6 +202,11 @@
     <script
         type="module"
         src="../../js/cliente/contacto.js"
+    ></script>
+
+    <script
+        type="module"
+        src="../../js/services/tienda-indicador.js"
     ></script>
 
     <script

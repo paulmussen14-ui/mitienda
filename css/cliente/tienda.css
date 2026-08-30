@@ -186,6 +186,32 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-size: cover;
+    background-position: center;
+}
+
+.tienda-banner.tiene-banner {
+    position: relative;
+}
+
+.tienda-banner.tiene-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35));
+}
+
+.tienda-banner.tiene-banner .tienda-logo,
+.tienda-banner.tiene-banner .tienda-abierta {
+    position: relative;
+    z-index: 1;
+}
+
+.tienda-banner.tiene-banner .tienda-abierta {
+    color: #fff;
+    background: rgba(0, 0, 0, .35);
+    padding: 3px 9px;
+    border-radius: 20px;
 }
 
 .tienda-logo {
@@ -200,6 +226,11 @@ main {
     align-items: center;
     justify-content: center;
     font-family: 'Baloo 2', sans-serif;
+}
+
+.tienda-logo-img {
+    object-fit: cover;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .8);
 }
 
 .tienda-abierta {
