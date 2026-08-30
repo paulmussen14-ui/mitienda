@@ -7,12 +7,13 @@ import {
     where,
     limit,
     updateDoc,
+    runTransaction,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import { dbCliente as db } from "../config/firebase-cliente.js";
 import { obtenerNegocioActual, configurarNavegacionNegocio } from "../services/negocios.js";
-import { obtenerClienteId } from "../config/auth-cliente.js";
+import { obtenerClienteId } from "./auth-cliente.js";
 
 /* =====================================================
    CLIENTE ACTUAL
@@ -24,6 +25,33 @@ import { obtenerClienteId } from "../config/auth-cliente.js";
    NOTA: "db" aquí es el Firestore de la app AISLADA del
    cliente (firebase-cliente.js), no el de firebase.js.
 ===================================================== */
+
+
+/* =====================================================
+   NÚMERO DE PEDIDO CORTO (secuencial por negocio)
+
+   Genera un número legible (#0001, #0002...) en vez del
+   ID largo y aleatorio que asigna Firestore. Se guarda un
+   contador dentro del propio documento del negocio y se
+   incrementa de forma atómica con una transacción para
+   evitar números repetidos si hay pedidos simultáneos.
+===================================================== */
+
+async function obtenerSiguienteNumeroPedido(negocioId) {
+
+    const negocioRef = doc(db, "negocios", negocioId);
+
+    return await runTransaction(db, async (transaction) => {
+
+        const negocioSnap = await transaction.get(negocioRef);
+        const actual = negocioSnap.data()?.ultimo_numero_pedido || 0;
+        const siguiente = actual + 1;
+
+        transaction.update(negocioRef, { ultimo_numero_pedido: siguiente });
+
+        return siguiente;
+    });
+}
 
 
 /* =====================================================
@@ -278,6 +306,16 @@ export async function crearPedido() {
 
 
         /* =================================================
+           NÚMERO DE PEDIDO CORTO
+        ================================================= */
+
+        const numeroPedido =
+            await obtenerSiguienteNumeroPedido(
+                negocio.id
+            );
+
+
+        /* =================================================
            CREAR PEDIDO
         ================================================= */
 
@@ -290,6 +328,14 @@ export async function crearPedido() {
                 ),
 
                 {
+
+                    /*
+                     * 🔢 NÚMERO CORTO
+                     */
+
+                    numero_pedido:
+                        numeroPedido,
+
 
                     /*
                      * 👤 DUEÑO DEL PEDIDO
@@ -371,7 +417,8 @@ export async function crearPedido() {
 
         console.log(
             "✅ Pedido creado:",
-            pedidoRef.id
+            pedidoRef.id,
+            "→ #" + String(numeroPedido).padStart(4, "0")
         );
 
 
@@ -394,6 +441,9 @@ export async function crearPedido() {
 
             pedidoId:
                 pedidoRef.id,
+
+            numeroPedido:
+                numeroPedido,
 
             clienteId:
                 clienteId,
@@ -679,7 +729,7 @@ async function cargarPedidos() {
 
 
                 /* =================================================
-                   ID
+                   ID / NÚMERO DE PEDIDO
                 ================================================= */
 
                 const idElemento =
@@ -691,7 +741,9 @@ async function cargarPedidos() {
                 if (idElemento) {
 
                     idElemento.textContent =
-                        `#${pedido.id}`;
+                        pedido.numero_pedido
+                            ? `#${String(pedido.numero_pedido).padStart(4, "0")}`
+                            : `#${pedido.id.slice(0, 6).toUpperCase()}`;
 
                 }
 
