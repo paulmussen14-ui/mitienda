@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pedidos · MiTienda</title>
+
+    <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/cliente/pedidos.css">
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         NAVEGACIÓN
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="brand">
+
+            <h2>
+                🛒 MiTienda
+            </h2>
+
+        </div>
+
+
+        <nav class="navtabs">
+            <a href="../../index.html">Inicio</a>
+            <a id="nav-productos" href="productos.html">Productos</a>
+            <a id="nav-carrito" href="carrito.html">🛒 Carrito</a>
+            <a id="nav-pedidos" class="active" href="pedidos.html">📦 Pedidos</a>
+            <a id="nav-contacto" href="contacto.html">Contacto</a>
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="page">
+
+
+        <!-- =================================================
+             ENCABEZADO
+        ================================================== -->
+
+        <section class="page-header">
+
+            <span class="tag-pedidos">
+                📦 MIS COMPRAS
+            </span>
+
+
+            <h1>
+                Mis pedidos
+            </h1>
+
+
+            <p id="subtitulo-pedidos">
+                Consulta el estado de tus pedidos realizados.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CARGANDO
+        ================================================== -->
+
+        <div
+            id="pedidos-cargando"
+            class="mensaje">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h3>
+                Cargando pedidos...
+            </h3>
+
+            <p>
+                Estamos buscando tus pedidos.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SIN PEDIDOS
+        ================================================== -->
+
+        <div
+            id="pedidos-vacios"
+            class="mensaje"
+            style="display:none;">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+
+            <h2>
+                No tienes pedidos
+            </h2>
+
+
+            <p>
+                Cuando realices una compra,
+                aparecerá aquí.
+            </p>
+
+
+            <a
+                href="../../index.html"
+                class="btn btn-accent">
+
+                Explorar tiendas
+
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             LISTA DE PEDIDOS
+        ================================================== -->
+
+        <section
+            id="lista-pedidos"
+            class="pedidos-lista">
+
+        </section>
+
+
+
+        <!-- =================================================
+             TEMPLATE PEDIDO
+        ================================================== -->
+
+        <template id="plantilla-pedido">
+
+            <article class="pedido-card">
+
+
+                <!-- =========================================
+                     CABECERA
+                ========================================== -->
+
+                <div class="pedido-header">
+
+                    <div>
+
+                        <span class="pedido-label">
+                            Pedido
+                        </span>
+
+
+                        <strong
+                            data-campo="id"
+                            class="pedido-id">
+
+                            #000000
+
+                        </strong>
+
+                    </div>
+
+
+                    <span
+                        data-campo="estado"
+                        class="pedido-estado">
+
+                        Pendiente
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     TIENDA
+                ========================================== -->
+
+                <div class="pedido-tienda">
+
+                    <span class="pedido-icon">
+                        🏪
+                    </span>
+
+
+                    <div>
+
+                        <small>
+                            Tienda
+                        </small>
+
+
+                        <strong
+                            data-campo="negocio">
+
+                            Tienda
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     FECHA
+                ========================================== -->
+
+                <div class="pedido-fecha">
+
+                    📅
+
+                    <span data-campo="fecha">
+                        -
+                    </span>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     PRODUCTOS
+                ========================================== -->
+
+                <div class="pedido-productos">
+
+                    <h3>
+                        Productos
+                    </h3>
+
+
+                    <div
+                        data-campo="detalle"
+                        class="detalle-pedido">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     TOTAL
+                ========================================== -->
+
+                <div class="pedido-total">
+
+                    <span>
+                        Total
+                    </span>
+
+
+                    <strong data-campo="total">
+                        S/ 0.00
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </template>
+
+
+
+        <!-- =================================================
+             TEMPLATE PRODUCTO DEL PEDIDO
+        ================================================== -->
+
+        <template id="plantilla-producto-pedido">
+
+            <div class="detalle-item">
+
+
+                <div class="detalle-info">
+
+                    <strong data-campo="nombre">
+                        Producto
+                    </strong>
+
+
+                    <span data-campo="cantidad">
+                        x1
+                    </span>
+
+                </div>
+
+
+                <span data-campo="subtotal">
+                    S/ 0.00
+                </span>
+
+            </div>
+
+        </template>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="../../js/cliente/pedidos.js">
+    </script>
+
+</body>
+
+</html>

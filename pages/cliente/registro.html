@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crear tienda · MiTienda</title>
+
+    <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/cliente/registro.css">
+</head>
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="brand">
+            <h2>🛒 MiTienda</h2>
+        </div>
+
+        <nav class="navtabs">
+            <a href="../../index.html">Inicio</a>
+            <a href="../admin/login.html">🔐 Iniciar sesión</a>
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="registro-page">
+
+        <div class="registro-header">
+            <span class="tag">🏪 ABRE TU TIENDA</span>
+            <h1>Crea tu tienda en MiTienda</h1>
+            <p>Completa tus datos y los de tu tienda. Tu panel se activa al instante.</p>
+        </div>
+
+        <form id="form-registro" class="registro-card">
+
+            <fieldset>
+                <legend>Tu cuenta</legend>
+
+                <label for="nombre-duenio">Nombre completo</label>
+                <input type="text" id="nombre-duenio" required autocomplete="name">
+
+                <label for="correo">Correo</label>
+                <input type="email" id="correo" required autocomplete="email">
+
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" required minlength="6" autocomplete="new-password">
+                <small>Mínimo 6 caracteres.</small>
+
+                <label for="confirmar-contrasena">Confirmar contraseña</label>
+                <input type="password" id="confirmar-contrasena" required minlength="6" autocomplete="new-password">
+            </fieldset>
+
+            <fieldset>
+                <legend>Tu tienda</legend>
+
+                <label for="nombre-tienda">Nombre de la tienda</label>
+                <input type="text" id="nombre-tienda" required autocomplete="off">
+
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" required autocomplete="off">
+
+                <label for="horario">Horario de atención</label>
+                <input type="text" id="horario" placeholder="Ej. Lun a sáb, 8am - 9pm" required autocomplete="off">
+            </fieldset>
+
+            <fieldset>
+                <legend>Logo de tu tienda (opcional)</legend>
+
+                <div class="logo-tabs">
+                    <button type="button" class="logo-tab on" data-modo="archivo">Subir archivo</button>
+                    <button type="button" class="logo-tab" data-modo="url">Pegar URL</button>
+                </div>
+
+                <div id="logo-modo-archivo" class="logo-modo">
+                    <input type="file" id="logo-archivo" accept="image/*">
+                    <small>JPG, PNG o WEBP. Máximo 3 MB.</small>
+                </div>
+
+                <div id="logo-modo-url" class="logo-modo" style="display:none;">
+                    <input type="text" id="logo-url" placeholder="https://ejemplo.com/mi-logo.png">
+                </div>
+
+                <img id="logo-preview" class="logo-preview" style="display:none;" alt="Vista previa del logo">
+            </fieldset>
+
+            <fieldset>
+                <legend>Plan</legend>
+
+                <input type="hidden" id="plan-elegido" value="basico">
+
+                <div class="plan-grid">
+
+                    <div class="plan-card" data-plan="basico">
+                        <span class="plan-nombre">Básico</span>
+                        <span class="plan-precio">Gratis</span>
+                    </div>
+
+                    <div class="plan-card" data-plan="pro">
+                        <span class="plan-nombre">Pro</span>
+                        <span class="plan-precio">S/ 29 /mes</span>
+                    </div>
+
+                    <div class="plan-card" data-plan="premium">
+                        <span class="plan-nombre">Premium</span>
+                        <span class="plan-precio">S/ 59 /mes</span>
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <div id="registro-error" class="login-error" style="display:none;"></div>
+
+            <button type="submit" class="btn btn-primary btn-full" id="btn-registro">
+                Crear mi tienda →
+            </button>
+
+            <a href="../admin/login.html" class="registro-login-link">
+                ¿Ya tienes cuenta? Inicia sesión
+            </a>
+
+        </form>
+
+    </main>
+
+    <script type="module" src="../../js/cliente/registro.js"></script>
+</body>
+</html>
