@@ -1,122 +1,247 @@
 import {
     collection,
-    getDocs
+    addDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import { db } from "../config/firebase.js";
-import { obtenerIniciales } from "../services/negocios.js";
+import { obtenerNegocioActual, configurarNavegacionNegocio } from "../services/negocios.js";
 
 
-let negocios = [];
+let negocioActual = null;
 
 
-/* =====================================================
-   CARGAR TIENDAS
-===================================================== */
+/* ============================================================
+   INICIAR
+============================================================ */
 
-async function cargarTiendas() {
-
-    const lista = document.getElementById("lista-tiendas");
-    const cargando = document.getElementById("tiendas-cargando");
-    const vacio = document.getElementById("sin-tiendas");
-    const cantidad = document.getElementById("cantidad-tiendas");
-    const plantilla = document.getElementById("plantilla-tienda");
+async function iniciarContacto() {
 
     try {
 
-        const resultado = await getDocs(collection(db, "negocios"));
+        negocioActual =
+            await obtenerNegocioActual();
 
-        negocios = resultado.docs.map(documento => ({
-            id: documento.id,
-            ...documento.data()
-        }));
 
-        if (cargando) cargando.style.display = "none";
+        if (!negocioActual) {
 
-        mostrarTiendas(negocios, lista, vacio, cantidad, plantilla);
+            mostrarError(
+                "No se encontró esta tienda."
+            );
+
+            return;
+        }
+
+
+        configurarEncabezado();
+
+        configurarNavegacionNegocio(negocioActual);
+
+        configurarFormulario();
+
 
     } catch (error) {
 
-        console.error("❌ Error cargando tiendas:", error);
+        console.error(
+            "❌ Error iniciando contacto:",
+            error
+        );
 
-        if (cargando) {
-            cargando.textContent = "No se pudieron cargar las tiendas.";
+        mostrarError(
+            "No se pudo cargar la tienda."
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   ENCABEZADO
+============================================================ */
+
+function configurarEncabezado() {
+
+    const nombre =
+        negocioActual.nombre ||
+        "Tienda";
+
+
+    document.title =
+        `Contacto · ${nombre}`;
+
+
+    const nombreElemento =
+        document.getElementById(
+            "nombre-negocio"
+        );
+
+
+    if (nombreElemento) {
+
+        nombreElemento.textContent =
+            `Escríbele a ${nombre}`;
+
+    }
+
+}
+
+
+/* ============================================================
+   FORMULARIO
+============================================================ */
+
+function configurarFormulario() {
+
+    const form =
+        document.getElementById(
+            "form-contacto"
+        );
+
+    const errorElemento =
+        document.getElementById(
+            "contacto-error"
+        );
+
+    const exitoElemento =
+        document.getElementById(
+            "contacto-exito"
+        );
+
+    const boton =
+        document.getElementById(
+            "btn-enviar-contacto"
+        );
+
+
+    if (!form) return;
+
+
+    function mostrarErrorFormulario(texto) {
+
+        if (errorElemento) {
+
+            errorElemento.textContent = texto;
+            errorElemento.style.display = "block";
+
         }
+
     }
+
+
+    form.addEventListener(
+        "submit",
+        async (evento) => {
+
+            evento.preventDefault();
+
+            if (errorElemento) {
+                errorElemento.style.display = "none";
+            }
+
+
+            const nombre =
+                document.getElementById("contacto-nombre").value.trim();
+
+            const contactoInfo =
+                document.getElementById("contacto-email").value.trim();
+
+            const tipo =
+                document.getElementById("contacto-tipo").value;
+
+            const mensaje =
+                document.getElementById("contacto-mensaje").value.trim();
+
+
+            if (!nombre || !contactoInfo || !mensaje) {
+
+                mostrarErrorFormulario(
+                    "Completa todos los campos."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                boton.disabled = true;
+                boton.textContent = "Enviando...";
+
+
+                await addDoc(
+                    collection(db, "mensajes"),
+                    {
+                        negocio_id: negocioActual.id,
+                        nombre,
+                        contacto: contactoInfo,
+                        tipo,
+                        mensaje,
+                        estado: "nuevo",
+                        creadoEn: serverTimestamp()
+                    }
+                );
+
+
+                form.style.display = "none";
+
+                if (exitoElemento) {
+                    exitoElemento.style.display = "block";
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "❌ Error enviando mensaje:",
+                    error
+                );
+
+                mostrarErrorFormulario(
+                    "No se pudo enviar tu mensaje. Intenta de nuevo."
+                );
+
+                boton.disabled = false;
+                boton.textContent = "Enviar mensaje";
+
+            }
+
+        }
+    );
+
 }
 
 
-/* =====================================================
-   MOSTRAR TIENDAS
-===================================================== */
+/* ============================================================
+   MOSTRAR ERROR
+============================================================ */
 
-function mostrarTiendas(tiendas, lista, vacio, cantidad, plantilla) {
+function mostrarError(mensaje) {
 
-    lista.innerHTML = "";
+    const main =
+        document.querySelector("main.page");
 
-    if (cantidad) {
-        cantidad.textContent =
-            `${tiendas.length} tienda${tiendas.length === 1 ? "" : "s"} disponible${tiendas.length === 1 ? "" : "s"}`;
+
+    if (main) {
+
+        main.innerHTML = `
+            <div class="sin-resultados">
+                <h3>⚠️ ${mensaje}</h3>
+                <p>
+                    Regresa al marketplace
+                    para seleccionar una tienda.
+                </p>
+            </div>
+        `;
+
     }
 
-    if (tiendas.length === 0) {
-        vacio.style.display = "block";
-        return;
-    }
-
-    vacio.style.display = "none";
-
-    tiendas.forEach(negocio => {
-
-        const nodo = plantilla.content.cloneNode(true);
-
-        const logo = nodo.querySelector('[data-campo="logo"]');
-        const nombre = nodo.querySelector('[data-campo="nombre"]');
-        const direccion = nodo.querySelector('[data-campo="direccion"]');
-        const horario = nodo.querySelector('[data-campo="horario"]');
-        const boton = nodo.querySelector('[data-campo="boton"]');
-
-        logo.textContent = obtenerIniciales(negocio.nombre || "MiTienda");
-        nombre.textContent = negocio.nombre || "Sin nombre";
-        direccion.textContent = negocio.direccion || "Ubicación no disponible";
-        horario.textContent = `🕐 ${negocio.horario || "Horario no disponible"}`;
-
-        boton.href = `productos.html?negocio=${encodeURIComponent(negocio.slug)}`;
-
-        lista.appendChild(nodo);
-    });
 }
 
 
-/* =====================================================
-   BUSCAR TIENDA
-===================================================== */
+/* ============================================================
+   EJECUTAR
+============================================================ */
 
-const buscador = document.getElementById("buscar-tienda");
-
-if (buscador) {
-
-    buscador.addEventListener("input", () => {
-
-        const texto = buscador.value.toLowerCase().trim();
-
-        const filtradas = negocios.filter(negocio =>
-            (negocio.nombre || "").toLowerCase().includes(texto)
-        );
-
-        mostrarTiendas(
-            filtradas,
-            document.getElementById("lista-tiendas"),
-            document.getElementById("sin-tiendas"),
-            document.getElementById("cantidad-tiendas"),
-            document.getElementById("plantilla-tienda")
-        );
-    });
-}
-
-
-/* =====================================================
-   INICIAR
-===================================================== */
-
-cargarTiendas();
+iniciarContacto();

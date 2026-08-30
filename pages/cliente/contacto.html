@@ -5,18 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tiendas · MiTienda</title>
+    <title>Contacto · MiTienda</title>
 
     <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/shared/footer.css">
     <link rel="stylesheet" href="../../css/cliente/contacto.css">
+
 </head>
 
 <body>
 
     <header class="navbar">
 
-        <div class="brand">
-            🛒 MiTienda
+        <div class="navbar-brand">
+            <a href="../../index.html">
+                🛒 MiTienda
+            </a>
         </div>
 
         <nav class="navtabs">
@@ -25,24 +29,20 @@
                 Inicio
             </a>
 
-            <a href="productos.html">
+            <a id="nav-productos" href="#">
                 Productos
             </a>
 
-            <a href="carrito.html">
+            <a id="nav-carrito" href="#">
                 Carrito
             </a>
 
-            <a href="pedidos.html">
+            <a id="nav-pedidos" href="#">
                 Pedidos
             </a>
 
-            <a class="active" href="contacto.html">
-                Tiendas
-            </a>
-
-            <a href="registro.html">
-                🏪 Crear cuenta
+            <a class="active" id="nav-contacto" href="#">
+                Contacto
             </a>
 
         </nav>
@@ -50,204 +50,126 @@
     </header>
 
 
-    <main>
+    <main class="page">
 
-        <!-- HERO -->
+        <section class="contacto-hero">
 
-        <section class="marketplace-hero">
+            <span class="tag">
+                ✉️ CONTACTO
+            </span>
 
-            <div class="hero-content">
+            <h1 id="nombre-negocio">
+                Cargando tienda...
+            </h1>
 
-                <span class="hero-tag">
-                    🛍️ Compra fácil y rápido
-                </span>
-
-                <h1>
-                    Encuentra todo lo que necesitas
-                </h1>
-
-                <p>
-                    Descubre tiendas y negocios disponibles
-                    en MiTienda.
-                </p>
-
-                <div class="search-box">
-
-                    <span>
-                        🔍
-                    </span>
-
-                    <input
-                        type="text"
-                        id="buscar-tienda"
-                        placeholder="Buscar tienda..."
-                    >
-
-                </div>
-
-            </div>
+            <p>
+                ¿Tienes una consulta, un pedido especial
+                o un reclamo? Escríbenos y te responderemos
+                lo antes posible.
+            </p>
 
         </section>
 
 
-        <!-- CATEGORÍAS -->
+        <section class="contacto-formulario">
 
-        <section class="categorias">
+            <form id="form-contacto">
 
-            <h2>
-                Explora por categoría
-            </h2>
+                <label for="contacto-nombre">
+                    Nombre
+                </label>
 
-            <div class="categoria-lista">
+                <input
+                    type="text"
+                    id="contacto-nombre"
+                    required
+                    placeholder="Tu nombre"
+                >
 
-                <button class="categoria activo">
-                    🛒 Todas
+
+                <label for="contacto-email">
+                    Correo o teléfono
+                </label>
+
+                <input
+                    type="text"
+                    id="contacto-email"
+                    required
+                    placeholder="¿Cómo te contactamos?"
+                >
+
+
+                <label for="contacto-tipo">
+                    Motivo
+                </label>
+
+                <select id="contacto-tipo">
+                    <option value="consulta">💬 Consulta</option>
+                    <option value="pedido">📦 Sobre un pedido</option>
+                    <option value="reclamo">⚠️ Reclamo</option>
+                    <option value="otro">✏️ Otro</option>
+                </select>
+
+
+                <label for="contacto-mensaje">
+                    Mensaje
+                </label>
+
+                <textarea
+                    id="contacto-mensaje"
+                    rows="5"
+                    required
+                    placeholder="Cuéntanos qué necesitas..."
+                ></textarea>
+
+
+                <div
+                    id="contacto-error"
+                    class="login-error"
+                    style="display:none;"
+                ></div>
+
+
+                <button
+                    type="submit"
+                    id="btn-enviar-contacto"
+                    class="btn btn-accent"
+                >
+                    Enviar mensaje
                 </button>
 
-                <button class="categoria">
-                    🍚 Bodegas
-                </button>
-
-                <button class="categoria">
-                    🍔 Comida
-                </button>
-
-                <button class="categoria">
-                    💊 Farmacias
-                </button>
-
-                <button class="categoria">
-                    🥤 Bebidas
-                </button>
-
-            </div>
-
-        </section>
+            </form>
 
 
-        <!-- TIENDAS -->
-
-        <section class="tiendas">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <h2>
-                        Tiendas disponibles
-                    </h2>
-
-                    <p id="cantidad-tiendas">
-                        Buscando tiendas...
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="tiendas-cargando"
-                class="mensaje"
-            >
-                Cargando tiendas...
-            </div>
-
-
-            <div
-                id="lista-tiendas"
-                class="tiendas-grid"
-            >
-            </div>
-
-
-            <div
-                id="sin-tiendas"
-                class="mensaje"
-                style="display:none;"
-            >
-
-                <div class="empty-icon">
-                    🏪
-                </div>
+            <div id="contacto-exito" style="display:none;">
 
                 <h2>
-                    No encontramos tiendas
+                    ✅ ¡Mensaje enviado!
                 </h2>
 
                 <p>
-                    Intenta con otro nombre.
+                    Gracias por escribirnos, te responderemos
+                    lo antes posible.
                 </p>
 
             </div>
 
         </section>
 
-
-        <!-- PLANTILLA -->
-
-        <template id="plantilla-tienda">
-
-            <article class="tienda-card">
-
-                <div class="tienda-banner">
-
-                    <span
-                        class="tienda-logo"
-                        data-campo="logo"
-                    >
-                        BM
-                    </span>
-
-                    <span class="tienda-abierta">
-                        ● Abierto
-                    </span>
-
-                </div>
-
-
-                <div class="tienda-contenido">
-
-                    <h3 data-campo="nombre">
-                        Bodega María
-                    </h3>
-
-                    <p
-                        class="tienda-direccion"
-                        data-campo="direccion"
-                    >
-                        Lima, Perú
-                    </p>
-
-                    <div class="tienda-datos">
-
-                        <span data-campo="horario">
-                            🕐 08:00 - 22:00
-                        </span>
-
-                    </div>
-
-
-                    <a
-                        data-campo="boton"
-                        class="btn btn-accent"
-                        href="#"
-                    >
-                        Ver tienda
-                    </a>
-
-                </div>
-
-            </article>
-
-        </template>
-
     </main>
+
+
+    <footer id="footer-mitienda" class="site-footer"></footer>
 
 
     <script
         type="module"
         src="../../js/cliente/contacto.js"
+    ></script>
+
+    <script
+        type="module"
+        src="../../js/services/footer.js"
     ></script>
 
 </body>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tiendas · MiTienda</title>
+
+    <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/shared/footer.css">
+    <link rel="stylesheet" href="../../css/cliente/tiendas.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="brand">
+            🛒 MiTienda
+        </div>
+
+        <nav class="navtabs">
+
+            <a href="../../index.html">
+                Inicio
+            </a>
+
+            <a href="carrito.html">
+                Carrito
+            </a>
+
+            <a href="pedidos.html">
+                Pedidos
+            </a>
+
+            <a class="active" href="tiendas.html">
+                Tiendas
+            </a>
+
+            <a href="registro.html">
+                🏪 Crear cuenta
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <!-- HERO -->
+
+        <section class="marketplace-hero">
+
+            <div class="hero-content">
+
+                <span class="hero-tag">
+                    🛍️ Compra fácil y rápido
+                </span>
+
+                <h1>
+                    Encuentra todo lo que necesitas
+                </h1>
+
+                <p>
+                    Descubre tiendas y negocios disponibles
+                    en MiTienda.
+                </p>
+
+                <div class="search-box">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscar-tienda"
+                        placeholder="Buscar tienda..."
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CATEGORÍAS -->
+
+        <section class="categorias">
+
+            <h2>
+                Explora por categoría
+            </h2>
+
+            <div class="categoria-lista">
+
+                <button class="categoria activo">
+                    🛒 Todas
+                </button>
+
+                <button class="categoria">
+                    🍚 Bodegas
+                </button>
+
+                <button class="categoria">
+                    🍔 Comida
+                </button>
+
+                <button class="categoria">
+                    💊 Farmacias
+                </button>
+
+                <button class="categoria">
+                    🥤 Bebidas
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- TIENDAS -->
+
+        <section class="tiendas">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Tiendas disponibles
+                    </h2>
+
+                    <p id="cantidad-tiendas">
+                        Buscando tiendas...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="tiendas-cargando"
+                class="mensaje"
+            >
+                Cargando tiendas...
+            </div>
+
+
+            <div
+                id="lista-tiendas"
+                class="tiendas-grid"
+            >
+            </div>
+
+
+            <div
+                id="sin-tiendas"
+                class="mensaje"
+                style="display:none;"
+            >
+
+                <div class="empty-icon">
+                    🏪
+                </div>
+
+                <h2>
+                    No encontramos tiendas
+                </h2>
+
+                <p>
+                    Intenta con otro nombre.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- PLANTILLA -->
+
+        <template id="plantilla-tienda">
+
+            <article class="tienda-card">
+
+                <div class="tienda-banner">
+
+                    <span
+                        class="tienda-logo"
+                        data-campo="logo"
+                    >
+                        BM
+                    </span>
+
+                    <span class="tienda-abierta">
+                        ● Abierto
+                    </span>
+
+                </div>
+
+
+                <div class="tienda-contenido">
+
+                    <h3 data-campo="nombre">
+                        Bodega María
+                    </h3>
+
+                    <p
+                        class="tienda-direccion"
+                        data-campo="direccion"
+                    >
+                        Lima, Perú
+                    </p>
+
+                    <div class="tienda-datos">
+
+                        <span data-campo="horario">
+                            🕐 08:00 - 22:00
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        data-campo="boton"
+                        class="btn btn-accent"
+                        href="#"
+                    >
+                        Ver tienda
+                    </a>
+
+                </div>
+
+            </article>
+
+        </template>
+
+    </main>
+
+
+    <footer id="footer-mitienda" class="site-footer"></footer>
+
+
+    <script>
+        window.__FOOTER_OPCIONES__ = { forzarGenerico: true };
+    </script>
+
+    <script
+        type="module"
+        src="../../js/cliente/tiendas.js"
+    ></script>
+
+    <script
+        type="module"
+        src="../../js/services/footer.js"
+    ></script>
+
+</body>
+
+</html>

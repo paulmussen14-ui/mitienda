@@ -1,235 +1,102 @@
 /* ============================================================
-   MITIENDA — PÁGINA "TIENDAS" (contacto.html)
+   MITIENDA — FORMULARIO DE CONTACTO / RECLAMOS (por tienda)
    Requiere theme.css cargado antes que este archivo.
    ============================================================ */
 
-main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-}
-
-
-/* ============================================================
-   HERO
-   ============================================================ */
-
-.marketplace-hero {
-    background:
-        repeating-linear-gradient(
-            115deg,
-            var(--verde) 0 18px,
-            var(--verde-oscuro) 18px 36px
-        );
-
+.contacto-hero {
+    background: var(--tienda-primario, #1F5C4A);
+    color: #fff;
+    padding: 40px 24px;
     border-radius: var(--radius);
-    padding: 34px 28px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
 
-.hero-tag {
+.contacto-hero .tag {
     display: inline-block;
-    background: var(--mostaza);
-    color: var(--verde-oscuro);
-    font-family: 'Space Mono', monospace;
+    background: rgba(255, 255, 255, .15);
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 20px;
-    margin-bottom: 12px;
 }
 
-.hero-content h1 {
-    color: #fff;
-    font-size: 30px;
-    line-height: 1.15;
-    margin-bottom: 8px;
-    max-width: 600px;
+.contacto-hero h1 {
+    margin: 12px 0 6px;
+    font-size: 26px;
 }
 
-.hero-content p {
-    color: #EAF3EE;
+.contacto-hero p {
+    opacity: .9;
+    max-width: 480px;
     font-size: 14px;
-    max-width: 560px;
-    margin-bottom: 18px;
 }
 
 
 /* ============================================================
-   BUSCADOR
+   FORMULARIO
    ============================================================ */
 
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
+.contacto-formulario {
+    max-width: 520px;
+    margin: 0 auto;
     background: #fff;
-    border-radius: 24px;
-    padding: 12px 17px;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    padding: 28px;
 }
 
-.search-box input {
-    border: none;
-    outline: none;
-    flex: 1;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    background: transparent;
+.contacto-formulario label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 14px 0 6px;
     color: var(--tinta);
 }
 
-
-/* ============================================================
-   CATEGORÍAS
-   ============================================================ */
-
-.categorias {
-    margin-bottom: 22px;
-}
-
-.categoria-lista {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-}
-
-.categoria {
-    background: #fff;
+.contacto-formulario input,
+.contacto-formulario select,
+.contacto-formulario textarea {
+    width: 100%;
+    padding: 10px 12px;
     border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    background: #fff;
     color: var(--tinta);
-    font-size: 12.5px;
-    font-weight: 600;
-    padding: 7px 14px;
-    border-radius: 20px;
-    white-space: nowrap;
+}
+
+.contacto-formulario textarea {
+    resize: vertical;
+}
+
+.contacto-formulario button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
 }
 
-.categoria.activo {
-    background: var(--mostaza);
-    border-color: var(--mostaza-oscuro);
-    color: #3d2a05;
+.contacto-formulario button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
 }
 
 
 /* ============================================================
-   SECCIÓN DE TIENDAS
+   CONFIRMACIÓN DE ENVÍO
    ============================================================ */
 
-.section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 14px;
-}
-
-
-/* ============================================================
-   MENSAJES (cargando / sin resultados)
-   ============================================================ */
-
-.mensaje {
-    background: #fff;
-    border: 1px solid var(--linea);
-    border-radius: var(--radius);
-    padding: 45px 20px;
+#contacto-exito {
     text-align: center;
+    padding: 40px 20px;
 }
 
-.empty-icon {
-    font-size: 42px;
-    margin-bottom: 8px;
-}
-
-
-/* ============================================================
-   GRID DE TIENDAS
-   ============================================================ */
-
-.tiendas-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-@media (min-width: 720px) {
-    .tiendas-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 1000px) {
-    .tiendas-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-
-/* ============================================================
-   TARJETA DE TIENDA
-   ============================================================ */
-
-.tienda-card {
-    background: #fff;
-    border: 1px solid var(--linea);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: transform .2s, box-shadow .2s;
-}
-
-.tienda-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(0,0,0,.08);
-}
-
-.tienda-banner {
-    background: var(--verde-suave);
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.tienda-logo {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: var(--verde);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Baloo 2', sans-serif;
-}
-
-.tienda-abierta {
-    font-size: 11px;
-    font-weight: 700;
+#contacto-exito h2 {
     color: var(--verde-oscuro);
-}
-
-.tienda-contenido {
-    padding: 16px 18px 18px;
-}
-
-.tienda-contenido h3 {
-    font-size: 18px;
-    margin-bottom: 4px;
-}
-
-.tienda-direccion {
-    font-size: 12.5px;
     margin-bottom: 8px;
-}
-
-.tienda-datos {
-    font-size: 11px;
-    color: var(--tinta-suave);
-    margin-bottom: 12px;
-}
-
-.tienda-contenido .btn {
-    display: block;
-    width: 100%;
-    text-align: center;
 }

@@ -1,0 +1,201 @@
+/* ============================================================
+   FOOTER COMPARTIDO — versión moderna
+   Se pinta con --tienda-primario cuando hay un negocio activo;
+   si no, usa el verde por defecto de MiTienda.
+   ============================================================ */
+
+.site-footer {
+    margin-top: 64px;
+    padding: 0;
+    background: var(--tienda-primario, #1F5C4A);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Franja de brillo sutil arriba, para separar del contenido */
+.site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .18);
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 44px 24px 24px;
+}
+
+
+/* ============================================================
+   FILA PRINCIPAL
+   ============================================================ */
+
+.footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    padding-bottom: 32px;
+}
+
+
+/* ---------- Marca / tienda ---------- */
+
+.footer-marca {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 320px;
+}
+
+.footer-logo-img,
+.footer-logo-iniciales {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .35);
+}
+
+.footer-logo-iniciales {
+    background: rgba(255, 255, 255, .16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: .5px;
+    font-family: 'Baloo 2', sans-serif;
+}
+
+.footer-marca h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+
+.footer-marca p {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, .7);
+    line-height: 1.4;
+}
+
+
+/* ---------- Columnas de información ---------- */
+
+.footer-columnas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+}
+
+.footer-columna h4 {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .55);
+}
+
+.footer-columna ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.footer-columna a,
+.footer-columna span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13.5px;
+    opacity: .92;
+    transition: opacity .15s ease;
+}
+
+.footer-columna a:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
+/* ---------- Botón CTA de contacto (footer de tienda) ---------- */
+
+.footer-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .25);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 999px;
+    transition: background .15s ease, transform .15s ease;
+    white-space: nowrap;
+}
+
+.footer-cta:hover {
+    background: rgba(255, 255, 255, .2);
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   PIE INFERIOR (copyright)
+   ============================================================ */
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, .14);
+    padding-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, .6);
+}
+
+.footer-bottom strong {
+    color: rgba(255, 255, 255, .85);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+    .footer-top {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .footer-columnas {
+        gap: 24px;
+        width: 100%;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+
+}
