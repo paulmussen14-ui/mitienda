@@ -71,6 +71,8 @@ async function iniciarProductos() {
 
         configurarNavegacion();
 
+        configurarLogoYBanner();
+
 
         configurarBuscador();
 
@@ -269,6 +271,48 @@ function configurarNavegacion() {
 
         navContacto.href =
             `contacto.html?negocio=${negocioParam}`;
+
+    }
+
+}
+
+
+/* ============================================================
+   ¿ES UNA IMAGEN VÁLIDA?
+============================================================ */
+
+function esImagenValida(valor) {
+    return typeof valor === "string" && valor.trim() !== "" && valor.trim() !== '""';
+}
+
+
+/* ============================================================
+   LOGO Y BANNER DE LA TIENDA
+============================================================ */
+
+function configurarLogoYBanner() {
+
+    const logoElemento =
+        document.getElementById("logo-negocio");
+
+    const bannerElemento =
+        document.getElementById("banner-negocio");
+
+
+    if (logoElemento && esImagenValida(negocioActual.logo)) {
+
+        logoElemento.src = negocioActual.logo;
+        logoElemento.alt = negocioActual.nombre || "Logo";
+        logoElemento.style.display = "block";
+
+    }
+
+
+    if (bannerElemento && esImagenValida(negocioActual.banner)) {
+
+        bannerElemento.src = negocioActual.banner;
+        bannerElemento.alt = `Portada de ${negocioActual.nombre || "la tienda"}`;
+        bannerElemento.style.display = "block";
 
     }
 
