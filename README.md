@@ -69,13 +69,28 @@ Vistas del bosquejo navegable — Evidencia AA1:
 | **Presentación** | HTML5, CSS3 (estilos propios, sin frameworks CSS) |
 | **Lógica de cliente** | JavaScript (ES Modules) |
 | **Backend / Base de datos** | Firebase (Firestore como base de datos NoSQL) |
-| **Autenticación** | Firebase Authentication |
+| **Autenticación** | Firebase Authentication (correo/contraseña y acceso anónimo) |
 | **Almacenamiento de archivos** | Firebase Storage |
-| **Entorno de ejecución** | live-server (desarrollo local) — servicios de datos, auth y storage siempre en la nube vía Firebase |
+| **Despliegue** | Firebase Hosting (dejado listo para publicar la app en producción) |
 
 El proyecto sigue una arquitectura de n-capas apoyada en **Firebase como Backend-as-a-Service (BaaS)**: el cliente (HTML/CSS/JS) se comunica directamente con los servicios de Firebase (Firestore, Auth, Storage) sin necesidad de un servidor propio intermedio.
 
-> ☁️ **Cloud Computing:** toda la base de datos, autenticación y almacenamiento de archivos corren en la nube (Google Cloud, a través de Firebase). En esta etapa del proyecto (AA1) el enfoque es únicamente el uso de servicios en la nube; la parte de pipelines, contenedores (Docker) y despliegue automatizado corresponde a etapas posteriores (AA2 en adelante).
+> ☁️ **Cloud Computing:** toda la base de datos, autenticación y almacenamiento de archivos corren en la nube (Google Cloud, a través de Firebase). El proyecto ya está configurado y listo para publicarse en Firebase Hosting; la parte de pipelines, contenedores (Docker) y despliegue automatizado corresponde a etapas posteriores (AA2 en adelante).
+
+## 📋 Gestión del proyecto (Azure DevOps)
+
+El desarrollo se planificó y gestionó en **Azure DevOps** (proyecto *"Mi tienda dev"*), con un equipo de 4 integrantes y trabajo organizado por tableros e historias de usuario:
+
+- **56 work items creados** / 38 activos durante el Sprint 1.
+- **Features del backlog:**
+  - *Diseño y estilo visual* — paleta de colores, tipografía, logo, wireframes de las vistas principales.
+  - *Base de datos en la nube* — creación del proyecto en Firebase, activación de Firestore, definición de colecciones, carga de datos de prueba y conexión con el frontend.
+  - *Desarrollo Frontend* — repositorio, Home, catálogo, carrito, login/registro, panel administrativo y publicación en Firebase Hosting.
+  - *Documentación de la evidencia* — propuesta de nuevas tendencias, referencias bibliográficas y consolidación del informe final.
+  - *Presentación y exposición* — diapositivas, ensayo y preparación de respuestas.
+- **Integración con GitHub:** el proyecto está conectado al repositorio [`paulmussen14-ui/mitienda`](https://github.com/paulmussen14-ui/mitienda) mediante una GitHub App, dando trazabilidad entre tareas de Azure Boards y commits del código.
+
+Esta gestión respalda la competencia de colaboración en equipo (EC2) evaluada en la rúbrica de la AA1, más allá de la parte puramente técnica.
 
 ## 🗂️ Estructura del proyecto
 
@@ -111,21 +126,61 @@ mitienda/
 └── package.json
 ```
 
-## 🗃️ Entidades de almacenamiento (Firestore)
+## 🗃️ Modelo de datos (Firestore)
 
-- **Negocios** — datos de cada tienda/emprendimiento registrado
-- **Usuarios** — clientes y administradores
-- **Productos** — catálogo por negocio, con categoría
-- **Pedidos** — órdenes generadas desde el carrito
-- **Ventas** — registro de transacciones concretadas
-- **Inventario** — stock disponible por producto
+Colecciones activas en la base de datos del proyecto (`mitienda`):
 
-## 🚀 Nueva tendencia propuesta
+| Colección | Descripción |
+|---|---|
+| **negocios** | Datos de cada tienda/emprendimiento registrado |
+| **usuarios** | Clientes y administradores |
+| **productos** | Catálogo por negocio, con categoría |
+| **pedidos** | Órdenes generadas desde el carrito |
+| **carritos** | Carrito activo por cliente antes de confirmar el pedido |
+| **ventas** | Registro de transacciones concretadas |
+| **movimientos_inventario** | Historial de entradas/salidas de stock |
+| **clientes** | Datos específicos de clientes registrados |
 
-Como propuesta de mejora futura, se plantea incorporar **recomendaciones personalizadas basadas en analítica de compras** (sugerencia de productos según historial del cliente), lo que potenciaría la fidelización dentro del marketplace. *(Simulación / propuesta, no implementada aún.)*
+**Ejemplo de atributos — colección `productos`:**
+
+```
+productos/{productoId}
+├── nombre: string        // "Arroz Costeño 1kg"
+├── descripcion: string   // "Arroz extra de 1 kg"
+├── categoria: string
+├── precio: number        // 4.5
+├── stock: number         // 29
+├── imagen: string (URL)
+└── negocio_id: string    // referencia al negocio dueño del producto
+```
+
+Cada documento de `productos` está relacionado a su negocio mediante `negocio_id`, lo que permite que el marketplace filtre el catálogo por tienda.
+
+## 🔐 Autenticación
+
+Implementada con **Firebase Authentication**, soportando:
+- Acceso **anónimo** (para navegación de invitados en el marketplace).
+- Acceso por **correo y contraseña** (clientes y administradores registrados).
+
+## 🚀 Nuevas tendencias propuestas
+
+Como parte de la propuesta de mejora del proyecto se plantean dos tendencias tecnológicas (simulación, no implementadas aún en esta etapa):
+
+1. **Recomendaciones personalizadas basadas en analítica de compras (IA)** — sugerencia de productos según el historial del cliente, para potenciar la fidelización dentro del marketplace.
+2. **PWA (Progressive Web App)** — permitiría instalar MiTienda como app en el celular del cliente, con acceso más rápido y soporte offline parcial al catálogo, mejorando la experiencia de compra en zonas con conexión inestable.
+
+## 📚 Referencias bibliográficas
+
+- Google. (s. f.). *Modelo de datos de Cloud Firestore*. Firebase Documentation. https://firebase.google.com/docs/firestore/data-model?hl=es-419
+- Google. (s. f.). *Firebase Authentication*. Firebase Documentation. https://firebase.google.com/docs/auth
+- Google. (s. f.). *Comienza con Firebase Hosting*. Firebase Documentation. https://firebase.google.com/docs/hosting/quickstart?hl=es-419
+- Mozilla. (s. f.). *Aplicaciones web progresivas (PWA)*. MDN Web Docs. https://developer.mozilla.org/es/docs/Web/Progressive_web_apps
+- IBM. (2025). *Tipos de arquitecturas de desarrollo de aplicaciones*. IBM Think. https://www.ibm.com/mx-es/think/topics/application-architecture-types
 
 ## 👥 Autores
 
 - Jean Paul Moncada
+- Ana huaman Evagenlista
+- Guillermo Jharnelt Paucar Ortiz
 
 Proyecto grupal — Actividad de Aprendizaje 1 (AA1)
