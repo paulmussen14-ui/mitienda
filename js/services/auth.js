@@ -56,12 +56,6 @@ export async function iniciarSesion(correo, contraseña) {
     }
 }
 
-/**
- * Registrar un nuevo dueño de tienda en Firebase Auth.
- * Solo crea la cuenta de autenticación — la creación de los
- * documentos en Firestore (negocio, usuario) se hace aparte,
- * para poder revertir con revertirRegistro() si algo falla.
- */
 export async function registrarUsuarioAuth(correo, contraseña) {
     try {
         const resultado = await createUserWithEmailAndPassword(

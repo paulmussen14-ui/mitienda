@@ -9,21 +9,6 @@ import {
 import { db } from "../config/firebase.js";
 import { obtenerNegocioActual } from "./negocios.js";
 
-
-/**
- * Registrar una venta a partir de un pedido.
- *
- * Esta operación:
- * 1. Busca el pedido.
- * 2. Verifica que pertenezca al negocio actual.
- * 3. Verifica el stock de todos los productos.
- * 4. Descuenta el stock.
- * 5. Registra el movimiento de inventario.
- * 6. Crea la venta.
- * 7. Actualiza el estado del pedido.
- *
- * Todo se realiza dentro de una transacción.
- */
 export async function registrarVenta(pedidoId) {
 
     try {

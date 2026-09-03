@@ -17,11 +17,6 @@ import { db } from "../config/firebase.js";
 const NEGOCIO_STORAGE_KEY = "mitienda_negocio_actual";
 
 
-/* =====================================================
-   OBTENER NEGOCIO ACTUAL
-   Prioridad: ?negocio= en la URL → último negocio visitado
-===================================================== */
-
 export async function obtenerNegocioActual() {
 
     const params = new URLSearchParams(window.location.search);

@@ -20,7 +20,7 @@ import { crearUsuario, actualizarUsuario } from "../services/usuarios.js";
 
 
 let negocioActual = null;
-let usuarioActualUid = null;   // el admin que está logueado ahora
+let usuarioActualUid = null;   
 let usuarios = [];
 
 

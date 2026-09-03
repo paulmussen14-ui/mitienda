@@ -15,27 +15,7 @@ import { dbCliente as db } from "../config/firebase-cliente.js";
 import { obtenerNegocioActual, configurarNavegacionNegocio } from "../services/negocios.js";
 import { obtenerClienteId } from "./auth-cliente.js";
 
-/* =====================================================
-   CLIENTE ACTUAL
 
-   La lógica de autenticación anónima vive ahora en
-   auth-cliente.js (compartida con carrito.js), para que
-   ambos archivos siempre estén sincronizados.
-
-   NOTA: "db" aquí es el Firestore de la app AISLADA del
-   cliente (firebase-cliente.js), no el de firebase.js.
-===================================================== */
-
-
-/* =====================================================
-   NÚMERO DE PEDIDO CORTO (secuencial por negocio)
-
-   Genera un número legible (#0001, #0002...) en vez del
-   ID largo y aleatorio que asigna Firestore. Se guarda un
-   contador dentro del propio documento del negocio y se
-   incrementa de forma atómica con una transacción para
-   evitar números repetidos si hay pedidos simultáneos.
-===================================================== */
 
 async function obtenerSiguienteNumeroPedido(negocioId) {
 

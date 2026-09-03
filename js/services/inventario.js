@@ -13,9 +13,7 @@ import {
 
 import { db } from "../config/firebase.js";
 
-/**
- * Obtener el stock actual de un producto
- */
+
 export async function obtenerStock(productoId) {
     try {
         const referencia = doc(db, "productos", productoId);

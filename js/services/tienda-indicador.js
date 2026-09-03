@@ -9,14 +9,6 @@ function esImagenValida(valor) {
     return typeof valor === "string" && valor.trim() !== "" && valor.trim() !== '""';
 }
 
-
-/* =====================================================
-   RENDERIZAR INDICADOR DE TIENDA
-   Muestra qué tienda se está viendo (recordada en este
-   navegador o pasada por ?negocio=) y un enlace para
-   cambiarla. Se inserta antes del <main> de la página.
-===================================================== */
-
 export async function renderTiendaIndicador() {
 
     const contenedor = document.getElementById("tienda-indicador");

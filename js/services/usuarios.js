@@ -8,9 +8,7 @@ import {
 
 import { db } from "../config/firebase.js";
 
-/**
- * Obtener un usuario por su UID
- */
+
 export async function obtenerUsuario(uid) {
     try {
         const referencia = doc(db, "usuarios", uid);

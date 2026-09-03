@@ -1,10 +1,6 @@
 import { obtenerIniciales } from "../services/negocios.js";
 import { cerrarSesion } from "../services/auth.js";
 
-/* =====================================================
-   ITEMS DEL MENÚ
-   Un solo lugar para agregar/quitar secciones del panel.
-===================================================== */
 
 const ITEMS_MENU = [
     { id: "dashboard", label: "Inicio", icono: "🏠", href: "index.html" },
@@ -16,12 +12,6 @@ const ITEMS_MENU = [
     { id: "configuracion", label: "Configuración", icono: "⚙️", href: "configuracion.html" }
 ];
 
-
-/* =====================================================
-   RENDER SIDEBAR
-   negocio: objeto del negocio (o null si aún no carga)
-   paginaActiva: id de ITEMS_MENU que debe marcarse activo
-===================================================== */
 
 export function renderSidebar(negocio, paginaActiva) {
 

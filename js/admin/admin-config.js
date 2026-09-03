@@ -3,14 +3,7 @@ import { protegerPanelAdmin } from "./admin-guard.js";
 import { renderSidebar } from "./admin-sidebar.js";
 import { actualizarNegocio } from "../services/negocios.js";
 
-/* =====================================================
-   Sin Firebase Storage (requiere plan Blaze de pago).
-   En vez de subir archivos, redimensionamos/comprimimos
-   la imagen en el navegador y la guardamos como base64
-   directo en el documento del negocio en Firestore.
-   Firestore permite hasta 1 MB por documento, así que
-   mantenemos las imágenes bien chicas (ver límites abajo).
-===================================================== */
+
 
 const LOGO_MAX_ANCHO = 300;
 const LOGO_MAX_ALTO = 300;
@@ -20,11 +13,7 @@ const PORTADA_MAX_ANCHO = 1600;
 const PORTADA_MAX_ALTO = 500;
 const PORTADA_CALIDAD = 0.75;
 
-/* =====================================================
-   PALETAS DISPONIBLES
-   Cada opción define un color primario (header, banner,
-   botones) y un color de acento (precios, CTAs).
-===================================================== */
+
 
 const PALETAS = [
     { id: "verde", primario: "#1F5C4A", oscuro: "#123B2F", acento: "#E8A23D" },
@@ -75,19 +64,12 @@ async function iniciar() {
 
 iniciar();
 
-
-// Considera "sin imagen" tanto un valor vacío/ausente como
-// restos de datos mal cargados (ej. el texto literal `""`
-// que quedó guardado por error al editar el documento a mano
-// en Firestore Console).
 function esImagenValida(valor) {
     return typeof valor === "string" && valor.trim() !== "" && valor.trim() !== '""';
 }
 
 function mostrarPreviewActual() {
 
-    // Los campos reales en Firestore son "logo" y "banner"
-    // (no "logoUrl" / "portadaUrl")
     if (esImagenValida(negocioActual?.logo)) {
         previewLogo.src = negocioActual.logo;
         previewLogo.style.display = "block";
@@ -283,9 +265,6 @@ btnGuardar.addEventListener("click", async () => {
         if (logoBase64) cambios.logo = logoBase64;
         if (portadaBase64) cambios.banner = portadaBase64;
 
-        // Firestore no acepta documentos de más de 1 MB.
-        // Con estas dimensiones/calidad debería sobrar margen,
-        // pero avisamos si algo se pasó de rosca.
         const pesoAproximado = JSON.stringify(cambios).length;
         if (pesoAproximado > 900000) {
             elMensaje.textContent = "❌ Las imágenes son muy pesadas incluso comprimidas. Prueba con una foto más simple.";
