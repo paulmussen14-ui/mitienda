@@ -151,10 +151,4 @@ export async function renderFooter(opciones = {}) {
 }
 
 
-/* =====================================================
-   EJECUTAR
-   Lee window.__FOOTER_OPCIONES__ si la página lo definió
-   antes de este <script>; si no, usa las opciones por defecto.
-===================================================== */
-
 renderFooter(window.__FOOTER_OPCIONES__ || {});

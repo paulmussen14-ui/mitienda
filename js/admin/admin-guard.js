@@ -3,11 +3,6 @@ import { obtenerUsuario } from "../services/usuarios.js";
 import { obtenerNegocioPorId } from "../services/negocios.js";
 
 
-/**
- * Llamar al inicio de CADA página del panel admin.
- * Devuelve { usuarioAuth, usuario, negocio } cuando todo es válido,
- * o redirige a login.html si algo falla.
- */
 export function protegerPanelAdmin() {
 
     return new Promise((resolve) => {
