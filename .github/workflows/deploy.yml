@@ -1,0 +1,32 @@
+name: Validar y Desplegar a Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar sintaxis de archivos JS
+        run: |
+          for f in $(find js -name "*.js"); do
+            echo "Verificando: $f"
+            node --check "$f"
+          done
+
+  desplegar:
+    needs: validar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MITIENDA_EE0E8 }}'
+          projectId: mitienda-ee0e8
+          channelId: live
