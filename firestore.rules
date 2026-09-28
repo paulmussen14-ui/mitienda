@@ -1,0 +1,181 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /* ============================================================
+       FUNCIONES AUXILIARES
+    ============================================================ */
+    function estaAutenticado() {
+      return request.auth != null;
+    }
+    function usuarioActual() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+    function esAdminDelNegocio(negocioId) {
+      return estaAutenticado()
+        && usuarioActual().negocio_id == negocioId
+        && usuarioActual().activo == true;
+    }
+    function esAdminConRolAdmin(negocioId) {
+      return esAdminDelNegocio(negocioId) && usuarioActual().rol == "admin";
+    }
+    function esDuenioDelNegocioNuevo(negocioId) {
+      // Usado solo en el autoregistro: el usuario aún no tiene
+      // documento en /usuarios, así que no podemos usar usuarioActual().
+      // En su lugar verificamos que el negocio ya exista y que
+      // su ownerUid coincida con quien está creando su cuenta.
+      return estaAutenticado()
+        && get(/databases/$(database)/documents/negocios/$(negocioId)).data.ownerUid == request.auth.uid;
+    }
+    // Evita que un campo "negocio_id" (o similar) cambie de valor
+    // durante un update, para que un admin no pueda "mover" un
+    // documento de un negocio a otro sin autorización del destino.
+    function campoInmutable(campo) {
+      return request.resource.data[campo] == resource.data[campo];
+    }
+
+    /* ============================================================
+       NEGOCIOS
+    ============================================================ */
+    match /negocios/{negocioId} {
+      allow read: if true;
+
+      // El admin puede actualizar los datos de su negocio, pero no
+      // puede cambiar el dueño (ownerUid) ni poner un plan inválido.
+      allow update: if esAdminDelNegocio(negocioId)
+        && campoInmutable('ownerUid')
+        && request.resource.data.plan in ["basico", "pro", "premium"];
+
+      allow delete: if false;
+
+      // Autoregistro: cualquier usuario autenticado puede crear SU
+      // PROPIO negocio (ownerUid == su uid), con un plan válido y
+      // los campos mínimos requeridos. No se permite crear negocios
+      // a nombre de otro uid.
+      allow create: if estaAutenticado()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.plan in ["basico", "pro", "premium"]
+        && request.resource.data.nombre is string
+        && request.resource.data.slug is string;
+    }
+
+    /* ============================================================
+       PRODUCTOS
+    ============================================================ */
+    match /productos/{productoId} {
+      allow read: if true;
+      allow create: if esAdminDelNegocio(request.resource.data.negocio_id);
+
+      // negocio_id no puede cambiar en un update: evita "mover" un
+      // producto de un negocio a otro sin autorización del destino.
+      allow update: if esAdminDelNegocio(resource.data.negocio_id)
+        && campoInmutable('negocio_id');
+
+      allow delete: if esAdminDelNegocio(resource.data.negocio_id);
+    }
+
+    /* ============================================================
+       CARRITOS
+       Los clientes usan Firebase Anonymous Auth: cliente_id ==
+       request.auth.uid (verificado por Firebase, no inventado por
+       el navegador). Cada cliente solo puede leer/escribir SU
+       propio carrito; el admin del negocio también puede leerlo.
+    ============================================================ */
+    match /carritos/{carritoId} {
+      allow read: if esAdminDelNegocio(resource.data.negocio_id)
+        || (estaAutenticado() && resource.data.cliente_id == request.auth.uid);
+
+      allow create: if estaAutenticado()
+        && request.resource.data.cliente_id == request.auth.uid
+        && request.resource.data.negocio_id is string;
+
+      // Solo el dueño del carrito puede modificarlo, y no puede
+      // cambiar de dueño ni de negocio en el camino.
+      allow update: if estaAutenticado()
+        && resource.data.cliente_id == request.auth.uid
+        && campoInmutable('cliente_id')
+        && campoInmutable('negocio_id');
+
+      allow delete: if estaAutenticado()
+        && resource.data.cliente_id == request.auth.uid;
+    }
+
+    /* ============================================================
+       PEDIDOS
+       cliente_id == request.auth.uid (Anonymous Auth). El cliente
+       puede leer y crear SU pedido; el admin del negocio puede
+       leer y actualizar (cambiar estado) los de su negocio.
+    ============================================================ */
+    match /pedidos/{pedidoId} {
+      allow read: if esAdminDelNegocio(resource.data.negocio_id)
+        || (estaAutenticado() && resource.data.cliente_id == request.auth.uid);
+
+      allow create: if estaAutenticado()
+        && request.resource.data.cliente_id == request.auth.uid
+        && request.resource.data.negocio_id is string
+        && request.resource.data.estado == "Pendiente";
+
+      // Solo el admin del negocio actualiza pedidos (p.ej. cambiar
+      // estado); negocio_id y cliente_id no pueden cambiar.
+      allow update: if esAdminDelNegocio(resource.data.negocio_id)
+        && campoInmutable('negocio_id')
+        && campoInmutable('cliente_id');
+
+      allow delete: if false;
+    }
+
+    /* ============================================================
+       VENTAS
+    ============================================================ */
+    match /ventas/{ventaId} {
+      allow read: if esAdminDelNegocio(resource.data.negocio_id);
+      allow create: if esAdminDelNegocio(request.resource.data.negocio_id);
+      allow update, delete: if false;
+    }
+
+    /* ============================================================
+       MOVIMIENTOS DE INVENTARIO
+    ============================================================ */
+    match /movimientos_inventario/{movimientoId} {
+      allow read: if esAdminDelNegocio(resource.data.negocio_id);
+      allow create: if esAdminDelNegocio(request.resource.data.negocio_id);
+      allow update, delete: if false;
+    }
+
+    /* ============================================================
+       USUARIOS
+    ============================================================ */
+    match /usuarios/{usuarioId} {
+      allow read: if estaAutenticado()
+        && (request.auth.uid == usuarioId
+            || esAdminDelNegocio(resource.data.negocio_id));
+
+      // Creación: dos caminos válidos.
+      // 1) Un admin existente crea usuarios para SU negocio (flujo normal).
+      // 2) Autoregistro: el propio usuario crea su documento como admin
+      //    de un negocio que él mismo acaba de crear (ownerUid == su uid).
+      allow create: if request.auth.uid == usuarioId
+        && (
+          esAdminConRolAdmin(request.resource.data.negocio_id)
+          || (
+            request.resource.data.rol == "admin"
+            && request.resource.data.activo == true
+            && esDuenioDelNegocioNuevo(request.resource.data.negocio_id)
+          )
+        );
+
+      // Actualización: un usuario puede editar su propio documento
+      // SIEMPRE QUE no cambie su rol ni su negocio_id (evita que se
+      // autoasigne privilegios). Un admin del negocio sí puede tocar
+      // esos campos para gestionar a su equipo, PERO ya no puede
+      // "trasladar" a un usuario a otro negocio (negocio_id inmutable
+      // también para el admin).
+      allow update: if (request.auth.uid == usuarioId
+          && campoInmutable('rol')
+          && campoInmutable('negocio_id'))
+        || (esAdminConRolAdmin(resource.data.negocio_id)
+          && campoInmutable('negocio_id'));
+
+      allow delete: if false;
+    }
+  }
+}
