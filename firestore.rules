@@ -109,13 +109,9 @@ service cloud.firestore {
       allow read: if esAdminDelNegocio(resource.data.negocio_id)
         || (estaAutenticado() && resource.data.cliente_id == request.auth.uid);
 
-      allow create: if estaAutenticado()
-        && request.resource.data.cliente_id == request.auth.uid
-        && request.resource.data.negocio_id is string
-        && request.resource.data.estado == "Pendiente";
+      // Solo la API (Firebase Admin SDK) crea pedidos ahora.
+      allow create: if false;
 
-      // Solo el admin del negocio actualiza pedidos (p.ej. cambiar
-      // estado); negocio_id y cliente_id no pueden cambiar.
       allow update: if esAdminDelNegocio(resource.data.negocio_id)
         && campoInmutable('negocio_id')
         && campoInmutable('cliente_id');
@@ -128,7 +124,7 @@ service cloud.firestore {
     ============================================================ */
     match /ventas/{ventaId} {
       allow read: if esAdminDelNegocio(resource.data.negocio_id);
-      allow create: if esAdminDelNegocio(request.resource.data.negocio_id);
+      allow create: if false;
       allow update, delete: if false;
     }
 
@@ -137,7 +133,7 @@ service cloud.firestore {
     ============================================================ */
     match /movimientos_inventario/{movimientoId} {
       allow read: if esAdminDelNegocio(resource.data.negocio_id);
-      allow create: if esAdminDelNegocio(request.resource.data.negocio_id);
+      allow create: if false;
       allow update, delete: if false;
     }
 
