@@ -180,7 +180,6 @@ Como parte de la propuesta de mejora del proyecto se plantean dos tendencias tec
 ## 👥 Autores
 
 - Jean Paul Moncada
-- Ana huaman Evagenlista
-- Guillermo Jharnelt Paucar Ortiz
+- Marny Colana Carpio
 
 Proyecto grupal — Actividad de Aprendizaje 1 (AA1)
