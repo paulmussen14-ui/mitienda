@@ -1,0 +1,883 @@
+diff --git a/css/cliente/cuenta.css b/css/cliente/cuenta.css
+new file mode 100644
+index 0000000..f203ae4
+--- /dev/null
++++ b/css/cliente/cuenta.css
+@@ -0,0 +1,126 @@
++/* ============================================================
++   MITIENDA — CUENTA DEL CLIENTE (cuenta.html)
++   Requiere theme.css cargado antes que este archivo.
++   ============================================================ */
++
++.login-page {
++    max-width: 440px;
++    margin: 40px auto;
++    padding: 0 16px;
++}
++
++.login-card {
++    background: #fff;
++    border: 1px solid var(--linea);
++    border-radius: var(--radius);
++    padding: 28px;
++    display: flex;
++    flex-direction: column;
++    gap: 4px;
++}
++
++.login-card h1 { font-size: 22px; margin-bottom: 4px; }
++
++.login-card form { display: flex; flex-direction: column; }
++
++.login-card label {
++    font-size: 12.5px;
++    font-weight: 600;
++    color: var(--tinta);
++    margin-top: 14px;
++    margin-bottom: 5px;
++}
++
++.login-card input {
++    border: 1.5px solid var(--linea);
++    border-radius: 10px;
++    padding: 10px 13px;
++    font-family: 'Inter', sans-serif;
++    font-size: 14px;
++    color: var(--tinta);
++    outline: none;
++    transition: .15s;
++}
++
++.login-card input:focus {
++    border-color: var(--verde);
++    box-shadow: 0 0 0 3px var(--verde-suave);
++}
++
++.login-card .btn {
++    margin-top: 20px;
++    min-height: 44px;
++    text-align: center;
++    text-decoration: none;
++    display: inline-flex;
++    align-items: center;
++    justify-content: center;
++}
++
++.tabs {
++    display: flex;
++    gap: 6px;
++    margin: 12px 0 4px;
++    border-bottom: 1px solid var(--linea);
++}
++
++.tab {
++    flex: 1;
++    background: none;
++    border: none;
++    border-bottom: 3px solid transparent;
++    padding: 10px 0;
++    font-family: 'Inter', sans-serif;
++    font-size: 14px;
++    font-weight: 600;
++    color: var(--tinta-suave);
++    cursor: pointer;
++}
++
++.tab.on {
++    color: var(--verde-oscuro);
++    border-bottom-color: var(--mostaza);
++}
++
++.aviso {
++    background: #FFF6E3;
++    border: 1px solid var(--mostaza);
++    color: var(--mostaza-oscuro);
++    font-size: 12.5px;
++    padding: 8px 12px;
++    border-radius: 8px;
++}
++
++.login-error {
++    background: #FBEAE8;
++    border: 1px solid var(--rojo);
++    color: var(--rojo);
++    font-size: 12.5px;
++    padding: 8px 12px;
++    border-radius: 8px;
++    margin-top: 12px;
++}
++
++.enlace {
++    display: block;
++    text-align: center;
++    margin-top: 14px;
++    font-size: 12.5px;
++    color: var(--verde);
++}
++
++.nota {
++    font-size: 11.5px;
++    color: var(--tinta-suave);
++    margin-top: 18px;
++}
++
++.btn-salir {
++    margin-top: 14px;
++    background: none;
++    border: none;
++    color: var(--rojo);
++    font-size: 13px;
++    font-weight: 600;
++    cursor: pointer;
++}
+diff --git a/index.html b/index.html
+index d11539b..4581652 100644
+--- a/index.html
++++ b/index.html
+@@ -57,13 +57,14 @@
+             </a>
+ 
+             <a href="pages/cliente/registro.html">
+-                🏪 Crear cuenta
++                🏪 Crear mi tienda
+             </a>
+ 
+             <a href="pages/admin/login.html">
+                 🔐 Iniciar sesión
+             </a>
+ 
++            <a href="pages/cliente/cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>
+diff --git a/js/cliente/auth-cliente.js b/js/cliente/auth-cliente.js
+index 00e8218..70a76f4 100644
+--- a/js/cliente/auth-cliente.js
++++ b/js/cliente/auth-cliente.js
+@@ -1,12 +1,31 @@
+ import {
+     onAuthStateChanged,
+-    signInAnonymously
++    signInAnonymously,
++    signInWithEmailAndPassword,
++    createUserWithEmailAndPassword,
++    linkWithCredential,
++    EmailAuthProvider,
++    signOut
+ } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+ 
+-import { authCliente as auth } from "../config/firebase-cliente.js";
++import {
++    doc,
++    getDoc,
++    setDoc,
++    serverTimestamp
++} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
++
++import { authCliente as auth, dbCliente } from "../config/firebase-cliente.js";
+ 
+ let clienteIdPromise = null;
+ 
++/* =====================================================
++   SESIÓN DEL CLIENTE
++   Todo visitante tiene una sesión (anónima al inicio).
++   Al crear su cuenta, esa MISMA sesión se convierte en
++   registrada (mismo uid), así que conserva su carrito.
++===================================================== */
++
+ export function obtenerClienteId() {
+ 
+     if (clienteIdPromise) {
+@@ -21,7 +40,7 @@ export function obtenerClienteId() {
+ 
+                 if (usuario) {
+                     cancelarListener();
+-                    console.log("👤 Cliente (anon uid):", usuario.uid);
++                    console.log("👤 Cliente (uid):", usuario.uid);
+                     resolve(usuario.uid);
+                     return;
+                 }
+@@ -43,4 +62,117 @@ export function obtenerClienteId() {
+     });
+ 
+     return clienteIdPromise;
+-}
+\ No newline at end of file
++}
++
++// Después de iniciar o cerrar sesión, el uid cambia: hay que olvidar el anterior.
++export function reiniciarClienteId() {
++    clienteIdPromise = null;
++}
++
++// Devuelve el usuario actual (o null) una vez que Firebase terminó de restaurar la sesión.
++export async function obtenerSesionCliente() {
++    await auth.authStateReady();
++    return auth.currentUser;
++}
++
++export async function esClienteRegistrado() {
++    const usuario = await obtenerSesionCliente();
++    return !!usuario && !usuario.isAnonymous;
++}
++
++
++/* =====================================================
++   PERFIL (colección "clientes", documento = uid)
++===================================================== */
++
++export async function obtenerPerfilCliente(uid) {
++    const snap = await getDoc(doc(dbCliente, "clientes", uid));
++    return snap.exists() ? snap.data() : null;
++}
++
++export async function guardarPerfilCliente(uid, { nombre, telefono, correo }) {
++    await setDoc(doc(dbCliente, "clientes", uid), {
++        nombre,
++        telefono,
++        correo,
++        creado_en: serverTimestamp()
++    });
++}
++
++
++/* =====================================================
++   REGISTRO / LOGIN / LOGOUT
++===================================================== */
++
++export async function registrarCliente({ nombre, telefono, correo, contrasena }) {
++
++    await auth.authStateReady();
++
++    const actual = auth.currentUser;
++    let usuario;
++
++    if (actual && actual.isAnonymous) {
++        // Convierte la sesión anónima en cuenta real (conserva uid, carrito y pedidos).
++        const credencial = EmailAuthProvider.credential(correo, contrasena);
++        const resultado = await linkWithCredential(actual, credencial);
++        usuario = resultado.user;
++    } else {
++        const resultado = await createUserWithEmailAndPassword(auth, correo, contrasena);
++        usuario = resultado.user;
++    }
++
++    // Refresca el token para que ya figure como cuenta de correo (no anónima).
++    await usuario.getIdToken(true);
++    reiniciarClienteId();
++
++    try {
++        await guardarPerfilCliente(usuario.uid, { nombre, telefono, correo });
++    } catch (error) {
++        console.error("❌ No se pudo guardar el perfil:", error);
++        const falla = new Error(
++            "Tu cuenta se creó, pero no se pudieron guardar tus datos. " +
++            "Completa tus datos para continuar."
++        );
++        falla.codigo = "PERFIL_PENDIENTE";
++        throw falla;
++    }
++
++    return usuario;
++}
++
++export async function iniciarSesionCliente(correo, contrasena) {
++
++    const resultado = await signInWithEmailAndPassword(auth, correo, contrasena);
++    reiniciarClienteId();
++
++    const perfil = await obtenerPerfilCliente(resultado.user.uid);
++    return { usuario: resultado.user, perfil };
++}
++
++export async function cerrarSesionCliente() {
++    await signOut(auth);
++    reiniciarClienteId();
++}
++
++export function traducirErrorAuth(error) {
++
++    switch (error?.code) {
++        case "auth/email-already-in-use":
++        case "auth/credential-already-in-use":
++            return "Ese correo ya tiene una cuenta. Usa la pestaña \"Ingresar\".";
++        case "auth/invalid-email":
++            return "El correo no es válido.";
++        case "auth/weak-password":
++            return "La contraseña es muy débil (mínimo 6 caracteres).";
++        case "auth/invalid-credential":
++        case "auth/wrong-password":
++        case "auth/user-not-found":
++            return "Correo o contraseña incorrectos.";
++        case "auth/too-many-requests":
++            return "Demasiados intentos. Espera unos minutos e intenta de nuevo.";
++        case "auth/network-request-failed":
++            return "No hay conexión. Revisa tu internet.";
++        default:
++            return error?.message || "Ocurrió un error. Intenta de nuevo.";
++    }
++}
+diff --git a/js/cliente/carrito.js b/js/cliente/carrito.js
+index f037b08..7d38c1e 100644
+--- a/js/cliente/carrito.js
++++ b/js/cliente/carrito.js
+@@ -1628,6 +1628,19 @@ function configurarConfirmarPedido() {
+                 );
+ 
+ 
++                if (error.codigo === "REQUIERE_CUENTA") {
++
++                    // Lleva al cliente a crear su cuenta y lo devuelve al carrito.
++                    window.location.href =
++                        "cuenta.html?motivo=pedido&volver=" +
++                        encodeURIComponent(
++                            "carrito.html" + window.location.search
++                        );
++
++                    return;
++
++                }
++
+                 alert(
+                     error.message ||
+                     "No se pudo crear el pedido."
+diff --git a/js/cliente/cuenta.js b/js/cliente/cuenta.js
+new file mode 100644
+index 0000000..2b24af8
+--- /dev/null
++++ b/js/cliente/cuenta.js
+@@ -0,0 +1,277 @@
++import {
++    obtenerSesionCliente,
++    obtenerPerfilCliente,
++    guardarPerfilCliente,
++    registrarCliente,
++    iniciarSesionCliente,
++    cerrarSesionCliente,
++    traducirErrorAuth
++} from "./auth-cliente.js";
++
++const parametros = new URLSearchParams(window.location.search);
++
++const paneles = {
++    cargando: document.getElementById("panel-cargando"),
++    acceso: document.getElementById("panel-acceso"),
++    completar: document.getElementById("panel-completar"),
++    sesion: document.getElementById("panel-sesion")
++};
++
++const errorAcceso = document.getElementById("acceso-error");
++const errorCompletar = document.getElementById("completar-error");
++
++
++/* =====================================================
++   UTILIDADES
++===================================================== */
++
++function mostrarPanel(nombre) {
++    Object.entries(paneles).forEach(([clave, panel]) => {
++        panel.style.display = clave === nombre ? "" : "none";
++    });
++}
++
++function mostrarError(caja, mensaje) {
++    caja.textContent = mensaje;
++    caja.style.display = "block";
++}
++
++function ocultarError(caja) {
++    caja.style.display = "none";
++}
++
++// Solo se acepta volver a páginas del mismo sitio (evita redirecciones a otros dominios).
++function destinoVolver() {
++    const valor = parametros.get("volver");
++    if (!valor) return null;
++    try {
++        const url = new URL(valor, window.location.href);
++        return url.origin === window.location.origin ? url.href : null;
++    } catch {
++        return null;
++    }
++}
++
++function normalizarTelefono(texto) {
++    const digitos = texto.replace(/[\s-]/g, "");
++    return /^\d{9}$/.test(digitos) ? digitos : null;
++}
++
++function terminar() {
++    const destino = destinoVolver();
++    if (destino) {
++        window.location.href = destino;
++        return;
++    }
++    iniciar();
++}
++
++
++/* =====================================================
++   PESTAÑAS
++===================================================== */
++
++document.querySelectorAll(".tab").forEach((boton) => {
++    boton.addEventListener("click", () => {
++
++        const crear = boton.dataset.tab === "crear";
++
++        document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("on", b === boton));
++        document.getElementById("form-ingresar").style.display = crear ? "none" : "";
++        document.getElementById("form-crear").style.display = crear ? "" : "none";
++        ocultarError(errorAcceso);
++    });
++});
++
++
++/* =====================================================
++   INGRESAR
++===================================================== */
++
++document.getElementById("form-ingresar").addEventListener("submit", async (evento) => {
++
++    evento.preventDefault();
++    ocultarError(errorAcceso);
++
++    const boton = document.getElementById("btn-ingresar");
++    boton.disabled = true;
++    boton.textContent = "Ingresando...";
++
++    try {
++
++        const correo = document.getElementById("ing-correo").value.trim();
++        const contrasena = document.getElementById("ing-contrasena").value;
++
++        const { perfil } = await iniciarSesionCliente(correo, contrasena);
++
++        if (!perfil) {
++            mostrarPanel("completar");
++            return;
++        }
++
++        terminar();
++
++    } catch (error) {
++        console.error("❌ Error al ingresar:", error);
++        mostrarError(errorAcceso, traducirErrorAuth(error));
++
++    } finally {
++        boton.disabled = false;
++        boton.textContent = "Ingresar →";
++    }
++});
++
++
++/* =====================================================
++   CREAR CUENTA
++===================================================== */
++
++document.getElementById("form-crear").addEventListener("submit", async (evento) => {
++
++    evento.preventDefault();
++    ocultarError(errorAcceso);
++
++    const nombre = document.getElementById("cre-nombre").value.trim();
++    const telefono = normalizarTelefono(document.getElementById("cre-telefono").value);
++    const correo = document.getElementById("cre-correo").value.trim();
++    const contrasena = document.getElementById("cre-contrasena").value;
++    const confirmar = document.getElementById("cre-confirmar").value;
++
++    if (nombre.length < 2) {
++        mostrarError(errorAcceso, "Escribe tu nombre completo.");
++        return;
++    }
++    if (!telefono) {
++        mostrarError(errorAcceso, "El celular debe tener 9 dígitos.");
++        return;
++    }
++    if (contrasena !== confirmar) {
++        mostrarError(errorAcceso, "Las contraseñas no coinciden.");
++        return;
++    }
++
++    const boton = document.getElementById("btn-crear");
++    boton.disabled = true;
++    boton.textContent = "Creando cuenta...";
++
++    try {
++
++        await registrarCliente({ nombre, telefono, correo, contrasena });
++        terminar();
++
++    } catch (error) {
++        console.error("❌ Error al crear la cuenta:", error);
++
++        if (error.codigo === "PERFIL_PENDIENTE") {
++            document.getElementById("com-nombre").value = nombre;
++            document.getElementById("com-telefono").value = telefono;
++            mostrarPanel("completar");
++            mostrarError(errorCompletar, error.message);
++            return;
++        }
++
++        mostrarError(errorAcceso, traducirErrorAuth(error));
++
++    } finally {
++        boton.disabled = false;
++        boton.textContent = "Crear cuenta →";
++    }
++});
++
++
++/* =====================================================
++   COMPLETAR DATOS
++===================================================== */
++
++document.getElementById("form-completar").addEventListener("submit", async (evento) => {
++
++    evento.preventDefault();
++    ocultarError(errorCompletar);
++
++    const nombre = document.getElementById("com-nombre").value.trim();
++    const telefono = normalizarTelefono(document.getElementById("com-telefono").value);
++
++    if (nombre.length < 2) {
++        mostrarError(errorCompletar, "Escribe tu nombre completo.");
++        return;
++    }
++    if (!telefono) {
++        mostrarError(errorCompletar, "El celular debe tener 9 dígitos.");
++        return;
++    }
++
++    const boton = document.getElementById("btn-completar");
++    boton.disabled = true;
++    boton.textContent = "Guardando...";
++
++    try {
++
++        const usuario = await obtenerSesionCliente();
++        await guardarPerfilCliente(usuario.uid, { nombre, telefono, correo: usuario.email || "" });
++        terminar();
++
++    } catch (error) {
++        console.error("❌ Error al guardar el perfil:", error);
++        mostrarError(errorCompletar, "No se pudieron guardar tus datos. Intenta de nuevo.");
++
++    } finally {
++        boton.disabled = false;
++        boton.textContent = "Guardar →";
++    }
++});
++
++
++/* =====================================================
++   CERRAR SESIÓN
++===================================================== */
++
++document.getElementById("btn-salir").addEventListener("click", async () => {
++    try {
++        await cerrarSesionCliente();
++    } finally {
++        window.location.href = "cuenta.html";
++    }
++});
++
++
++/* =====================================================
++   INICIAR
++===================================================== */
++
++async function iniciar() {
++
++    try {
++
++        const usuario = await obtenerSesionCliente();
++
++        if (!usuario || usuario.isAnonymous) {
++            document.getElementById("aviso-pedido").style.display =
++                parametros.get("motivo") === "pedido" ? "block" : "none";
++            mostrarPanel("acceso");
++            return;
++        }
++
++        const perfil = await obtenerPerfilCliente(usuario.uid);
++
++        if (!perfil) {
++            mostrarPanel("completar");
++            return;
++        }
++
++        document.getElementById("sesion-saludo").textContent = `Hola, ${perfil.nombre} 👋`;
++        document.getElementById("sesion-correo").textContent = perfil.correo || usuario.email || "";
++        document.getElementById("sesion-telefono").textContent = `📱 ${perfil.telefono}`;
++
++        const destino = destinoVolver();
++        if (destino) document.getElementById("btn-continuar").href = destino;
++
++        mostrarPanel("sesion");
++
++    } catch (error) {
++        console.error("❌ Error cargando la cuenta:", error);
++        mostrarPanel("acceso");
++        mostrarError(errorAcceso, "No se pudo cargar tu sesión. Recarga la página.");
++    }
++}
++
++iniciar();
+diff --git a/js/cliente/recuperar.js b/js/cliente/recuperar.js
+index 548d2e9..4f8227f 100644
+--- a/js/cliente/recuperar.js
++++ b/js/cliente/recuperar.js
+@@ -1,6 +1,12 @@
+ import { enviarRecuperacion } from "../services/auth.js";
+ 
+ const formulario = document.getElementById("form-recuperar");
++
++// Si el cliente llegó desde "Mi cuenta", el enlace de volver apunta ahí.
++if (new URLSearchParams(window.location.search).get("desde") === "cuenta") {
++    const volver = document.querySelector(".volver-login");
++    if (volver) volver.href = "cuenta.html";
++}
+ const botonRecuperar = document.getElementById("btn-recuperar");
+ const errorBox = document.getElementById("recuperar-error");
+ const exitoBox = document.getElementById("recuperar-exito");
+diff --git a/js/services/footer.js b/js/services/footer.js
+index aebe739..fb2b334 100644
+--- a/js/services/footer.js
++++ b/js/services/footer.js
+@@ -33,7 +33,8 @@ function footerGenerico() {
+                         <ul>
+                             <li><a href="/index.html">Inicio</a></li>
+                             <li><a href="/pages/cliente/tienda.html">Tiendas</a></li>
+-                            <li><a href="/pages/cliente/registro.html">Crear cuenta</a></li>
++                            <li><a href="/pages/cliente/cuenta.html">Mi cuenta</a></li>
++                            <li><a href="/pages/cliente/registro.html">Crear mi tienda</a></li>
+                         </ul>
+                     </div>
+                 </div>
+diff --git a/js/services/pedidos.js b/js/services/pedidos.js
+index 872228f..4fd5c48 100644
+--- a/js/services/pedidos.js
++++ b/js/services/pedidos.js
+@@ -1,5 +1,5 @@
+ import { obtenerNegocioActual } from "./negocios.js";
+-import { obtenerClienteId } from "../cliente/auth-cliente.js";
++import { obtenerClienteId, obtenerPerfilCliente } from "../cliente/auth-cliente.js";
+ import { llamarApi } from "../config/api.js";
+ import { authCliente } from "../config/firebase-cliente.js";
+ 
+@@ -20,6 +20,19 @@ export async function crearPedido() {
+     // Espera a que haya sesión (anónima o registrada) y toma su token:
+     // la API deduce el cliente desde el token, ya no desde el body.
+     const clienteId = await obtenerClienteId();
++
++    // Solo los clientes registrados (con su perfil completo) pueden hacer pedidos.
++    const usuarioActual = authCliente.currentUser;
++    const perfil = usuarioActual && !usuarioActual.isAnonymous
++        ? await obtenerPerfilCliente(clienteId)
++        : null;
++
++    if (!perfil) {
++        const falla = new Error("Crea tu cuenta o inicia sesión para confirmar tu pedido.");
++        falla.codigo = "REQUIERE_CUENTA";
++        throw falla;
++    }
++
+     const token = await authCliente.currentUser.getIdToken();
+ 
+     const respuesta = await llamarApi("/pedidos", {
+diff --git a/pages/cliente/carrito.html b/pages/cliente/carrito.html
+index e0a29c7..1c8e62b 100644
+--- a/pages/cliente/carrito.html
++++ b/pages/cliente/carrito.html
+@@ -39,7 +39,8 @@
+             <a id="nav-carrito" class="active" href="carrito.html">🛒 Carrito</a>
+             <a id="nav-pedidos" href="pedidos.html">📦 Pedidos</a>
+             <a id="nav-contacto" href="contacto.html">Contacto</a>
+-            <a href="registro.html">🏪 Crear cuenta</a>
++            <a href="registro.html">🏪 Crear mi tienda</a>
++            <a href="cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>
+diff --git a/pages/cliente/contacto.html b/pages/cliente/contacto.html
+index 2d4f883..a1f7968 100644
+--- a/pages/cliente/contacto.html
++++ b/pages/cliente/contacto.html
+@@ -46,6 +46,7 @@
+                 Contacto
+             </a>
+ 
++            <a href="cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>
+diff --git a/pages/cliente/cuenta.html b/pages/cliente/cuenta.html
+new file mode 100644
+index 0000000..b2dd0e0
+--- /dev/null
++++ b/pages/cliente/cuenta.html
+@@ -0,0 +1,123 @@
++<!DOCTYPE html>
++<html lang="es">
++<head>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++
++    <title>Mi cuenta · MiTienda</title>
++
++    <link rel="stylesheet" href="../../css/shared/theme.css">
++    <link rel="stylesheet" href="../../css/cliente/cuenta.css">
++</head>
++<body>
++
++    <header class="navbar">
++        <div class="brand"><h2>🛒 MiTienda</h2></div>
++        <nav class="navtabs">
++            <a href="../../index.html">Inicio</a>
++            <a href="carrito.html">🛒 Carrito</a>
++            <a href="pedidos.html">📦 Pedidos</a>
++            <a class="active" href="cuenta.html">👤 Mi cuenta</a>
++        </nav>
++    </header>
++
++    <main class="login-page">
++
++        <div id="panel-cargando" class="login-card">
++            <p>Cargando...</p>
++        </div>
++
++
++        <!-- ===== Ingresar / Crear cuenta ===== -->
++        <section id="panel-acceso" class="login-card" style="display:none;">
++
++            <h1>👤 Mi cuenta</h1>
++            <p id="aviso-pedido" class="aviso" style="display:none;">
++                Para confirmar tu pedido necesitas una cuenta. Tu carrito se conserva.
++            </p>
++
++            <div class="tabs" role="tablist">
++                <button type="button" class="tab on" data-tab="ingresar">Ingresar</button>
++                <button type="button" class="tab" data-tab="crear">Crear cuenta</button>
++            </div>
++
++            <div id="acceso-error" class="login-error" style="display:none;"></div>
++
++            <form id="form-ingresar">
++                <label for="ing-correo">Correo</label>
++                <input type="email" id="ing-correo" required autocomplete="username">
++
++                <label for="ing-contrasena">Contraseña</label>
++                <input type="password" id="ing-contrasena" required autocomplete="current-password">
++
++                <button type="submit" class="btn btn-primary btn-full" id="btn-ingresar">Ingresar →</button>
++
++                <a href="recuperar.html?desde=cuenta" class="enlace">¿Olvidaste tu contraseña?</a>
++            </form>
++
++            <form id="form-crear" style="display:none;">
++                <label for="cre-nombre">Nombre completo</label>
++                <input type="text" id="cre-nombre" required maxlength="80" autocomplete="name">
++
++                <label for="cre-telefono">Celular (9 dígitos)</label>
++                <input type="tel" id="cre-telefono" required inputmode="numeric" maxlength="12" autocomplete="tel">
++
++                <label for="cre-correo">Correo</label>
++                <input type="email" id="cre-correo" required autocomplete="email">
++
++                <label for="cre-contrasena">Contraseña (mínimo 6 caracteres)</label>
++                <input type="password" id="cre-contrasena" required minlength="6" autocomplete="new-password">
++
++                <label for="cre-confirmar">Confirmar contraseña</label>
++                <input type="password" id="cre-confirmar" required minlength="6" autocomplete="new-password">
++
++                <button type="submit" class="btn btn-accent btn-full" id="btn-crear">Crear cuenta →</button>
++            </form>
++
++            <p class="nota">
++                Si ingresas con una cuenta existente, el carrito de esta visita no se une a esa cuenta.
++                ¿Eres dueño de una tienda? <a href="../admin/login.html">Ingresa aquí</a>.
++            </p>
++
++        </section>
++
++
++        <!-- ===== Completar datos (cuenta sin perfil) ===== -->
++        <section id="panel-completar" class="login-card" style="display:none;">
++
++            <h1>📝 Completa tus datos</h1>
++            <p>Necesitamos tu nombre y celular para que la tienda pueda contactarte por tus pedidos.</p>
++
++            <div id="completar-error" class="login-error" style="display:none;"></div>
++
++            <form id="form-completar">
++                <label for="com-nombre">Nombre completo</label>
++                <input type="text" id="com-nombre" required maxlength="80" autocomplete="name">
++
++                <label for="com-telefono">Celular (9 dígitos)</label>
++                <input type="tel" id="com-telefono" required inputmode="numeric" maxlength="12" autocomplete="tel">
++
++                <button type="submit" class="btn btn-accent btn-full" id="btn-completar">Guardar →</button>
++            </form>
++
++        </section>
++
++
++        <!-- ===== Sesión iniciada ===== -->
++        <section id="panel-sesion" class="login-card" style="display:none;">
++
++            <h1 id="sesion-saludo">Hola</h1>
++            <p id="sesion-correo"></p>
++            <p id="sesion-telefono"></p>
++
++            <a id="btn-continuar" href="carrito.html" class="btn btn-accent btn-full">Ir a mi carrito →</a>
++            <a href="pedidos.html" class="btn btn-primary btn-full">📦 Mis pedidos</a>
++            <button type="button" id="btn-salir" class="btn-salir">Cerrar sesión</button>
++
++        </section>
++
++    </main>
++
++    <script type="module" src="../../js/cliente/cuenta.js"></script>
++</body>
++</html>
+diff --git a/pages/cliente/pedidos.html b/pages/cliente/pedidos.html
+index 75a756d..a82a071 100644
+--- a/pages/cliente/pedidos.html
++++ b/pages/cliente/pedidos.html
+@@ -37,6 +37,7 @@
+             <a id="nav-carrito" href="carrito.html">🛒 Carrito</a>
+             <a id="nav-pedidos" class="active" href="pedidos.html">📦 Pedidos</a>
+             <a id="nav-contacto" href="contacto.html">Contacto</a>
++            <a href="cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>
+diff --git a/pages/cliente/productos.html b/pages/cliente/productos.html
+index c9b3820..5ad7d63 100644
+--- a/pages/cliente/productos.html
++++ b/pages/cliente/productos.html
+@@ -47,6 +47,7 @@
+                 Contacto
+             </a>
+ 
++            <a href="cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>
+diff --git a/pages/cliente/tienda.html b/pages/cliente/tienda.html
+index a5641f8..165de27 100644
+--- a/pages/cliente/tienda.html
++++ b/pages/cliente/tienda.html
+@@ -39,9 +39,10 @@
+             </a>
+ 
+             <a href="registro.html">
+-                🏪 Crear cuenta
++                🏪 Crear mi tienda
+             </a>
+ 
++            <a href="cuenta.html">👤 Mi cuenta</a>
+         </nav>
+ 
+     </header>

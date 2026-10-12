@@ -33,7 +33,8 @@ function footerGenerico() {
                         <ul>
                             <li><a href="/index.html">Inicio</a></li>
                             <li><a href="/pages/cliente/tienda.html">Tiendas</a></li>
-                            <li><a href="/pages/cliente/registro.html">Crear cuenta</a></li>
+                            <li><a href="/pages/cliente/cuenta.html">Mi cuenta</a></li>
+                            <li><a href="/pages/cliente/registro.html">Crear mi tienda</a></li>
                         </ul>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import { obtenerNegocioActual } from "./negocios.js";
-import { obtenerClienteId } from "../cliente/auth-cliente.js";
+import { obtenerClienteId, obtenerPerfilCliente } from "../cliente/auth-cliente.js";
 import { llamarApi } from "../config/api.js";
 import { authCliente } from "../config/firebase-cliente.js";
 
@@ -20,6 +20,19 @@ export async function crearPedido() {
     // Espera a que haya sesión (anónima o registrada) y toma su token:
     // la API deduce el cliente desde el token, ya no desde el body.
     const clienteId = await obtenerClienteId();
+
+    // Solo los clientes registrados (con su perfil completo) pueden hacer pedidos.
+    const usuarioActual = authCliente.currentUser;
+    const perfil = usuarioActual && !usuarioActual.isAnonymous
+        ? await obtenerPerfilCliente(clienteId)
+        : null;
+
+    if (!perfil) {
+        const falla = new Error("Crea tu cuenta o inicia sesión para confirmar tu pedido.");
+        falla.codigo = "REQUIERE_CUENTA";
+        throw falla;
+    }
+
     const token = await authCliente.currentUser.getIdToken();
 
     const respuesta = await llamarApi("/pedidos", {

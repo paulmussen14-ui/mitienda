@@ -1628,6 +1628,19 @@ function configurarConfirmarPedido() {
                 );
 
 
+                if (error.codigo === "REQUIERE_CUENTA") {
+
+                    // Lleva al cliente a crear su cuenta y lo devuelve al carrito.
+                    window.location.href =
+                        "cuenta.html?motivo=pedido&volver=" +
+                        encodeURIComponent(
+                            "carrito.html" + window.location.search
+                        );
+
+                    return;
+
+                }
+
                 alert(
                     error.message ||
                     "No se pudo crear el pedido."

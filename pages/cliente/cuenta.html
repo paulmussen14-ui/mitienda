@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi cuenta · MiTienda</title>
+
+    <link rel="stylesheet" href="../../css/shared/theme.css">
+    <link rel="stylesheet" href="../../css/cliente/cuenta.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand"><h2>🛒 MiTienda</h2></div>
+        <nav class="navtabs">
+            <a href="../../index.html">Inicio</a>
+            <a href="carrito.html">🛒 Carrito</a>
+            <a href="pedidos.html">📦 Pedidos</a>
+            <a class="active" href="cuenta.html">👤 Mi cuenta</a>
+        </nav>
+    </header>
+
+    <main class="login-page">
+
+        <div id="panel-cargando" class="login-card">
+            <p>Cargando...</p>
+        </div>
+
+
+        <!-- ===== Ingresar / Crear cuenta ===== -->
+        <section id="panel-acceso" class="login-card" style="display:none;">
+
+            <h1>👤 Mi cuenta</h1>
+            <p id="aviso-pedido" class="aviso" style="display:none;">
+                Para confirmar tu pedido necesitas una cuenta. Tu carrito se conserva.
+            </p>
+
+            <div class="tabs" role="tablist">
+                <button type="button" class="tab on" data-tab="ingresar">Ingresar</button>
+                <button type="button" class="tab" data-tab="crear">Crear cuenta</button>
+            </div>
+
+            <div id="acceso-error" class="login-error" style="display:none;"></div>
+
+            <form id="form-ingresar">
+                <label for="ing-correo">Correo</label>
+                <input type="email" id="ing-correo" required autocomplete="username">
+
+                <label for="ing-contrasena">Contraseña</label>
+                <input type="password" id="ing-contrasena" required autocomplete="current-password">
+
+                <button type="submit" class="btn btn-primary btn-full" id="btn-ingresar">Ingresar →</button>
+
+                <a href="recuperar.html?desde=cuenta" class="enlace">¿Olvidaste tu contraseña?</a>
+            </form>
+
+            <form id="form-crear" style="display:none;">
+                <label for="cre-nombre">Nombre completo</label>
+                <input type="text" id="cre-nombre" required maxlength="80" autocomplete="name">
+
+                <label for="cre-telefono">Celular (9 dígitos)</label>
+                <input type="tel" id="cre-telefono" required inputmode="numeric" maxlength="12" autocomplete="tel">
+
+                <label for="cre-correo">Correo</label>
+                <input type="email" id="cre-correo" required autocomplete="email">
+
+                <label for="cre-contrasena">Contraseña (mínimo 6 caracteres)</label>
+                <input type="password" id="cre-contrasena" required minlength="6" autocomplete="new-password">
+
+                <label for="cre-confirmar">Confirmar contraseña</label>
+                <input type="password" id="cre-confirmar" required minlength="6" autocomplete="new-password">
+
+                <button type="submit" class="btn btn-accent btn-full" id="btn-crear">Crear cuenta →</button>
+            </form>
+
+            <p class="nota">
+                Si ingresas con una cuenta existente, el carrito de esta visita no se une a esa cuenta.
+                ¿Eres dueño de una tienda? <a href="../admin/login.html">Ingresa aquí</a>.
+            </p>
+
+        </section>
+
+
+        <!-- ===== Completar datos (cuenta sin perfil) ===== -->
+        <section id="panel-completar" class="login-card" style="display:none;">
+
+            <h1>📝 Completa tus datos</h1>
+            <p>Necesitamos tu nombre y celular para que la tienda pueda contactarte por tus pedidos.</p>
+
+            <div id="completar-error" class="login-error" style="display:none;"></div>
+
+            <form id="form-completar">
+                <label for="com-nombre">Nombre completo</label>
+                <input type="text" id="com-nombre" required maxlength="80" autocomplete="name">
+
+                <label for="com-telefono">Celular (9 dígitos)</label>
+                <input type="tel" id="com-telefono" required inputmode="numeric" maxlength="12" autocomplete="tel">
+
+                <button type="submit" class="btn btn-accent btn-full" id="btn-completar">Guardar →</button>
+            </form>
+
+        </section>
+
+
+        <!-- ===== Sesión iniciada ===== -->
+        <section id="panel-sesion" class="login-card" style="display:none;">
+
+            <h1 id="sesion-saludo">Hola</h1>
+            <p id="sesion-correo"></p>
+            <p id="sesion-telefono"></p>
+
+            <a id="btn-continuar" href="carrito.html" class="btn btn-accent btn-full">Ir a mi carrito →</a>
+            <a href="pedidos.html" class="btn btn-primary btn-full">📦 Mis pedidos</a>
+            <button type="button" id="btn-salir" class="btn-salir">Cerrar sesión</button>
+
+        </section>
+
+    </main>
+
+    <script type="module" src="../../js/cliente/cuenta.js"></script>
+</body>
+</html>

@@ -1,6 +1,12 @@
 import { enviarRecuperacion } from "../services/auth.js";
 
 const formulario = document.getElementById("form-recuperar");
+
+// Si el cliente llegó desde "Mi cuenta", el enlace de volver apunta ahí.
+if (new URLSearchParams(window.location.search).get("desde") === "cuenta") {
+    const volver = document.querySelector(".volver-login");
+    if (volver) volver.href = "cuenta.html";
+}
 const botonRecuperar = document.getElementById("btn-recuperar");
 const errorBox = document.getElementById("recuperar-error");
 const exitoBox = document.getElementById("recuperar-exito");

@@ -1,0 +1,78 @@
+diff --git a/firestore.rules b/firestore.rules
+index db911a9..3528206 100644
+--- a/firestore.rules
++++ b/firestore.rules
+@@ -137,6 +137,42 @@ service cloud.firestore {
+       allow update, delete: if false;
+     }
+ 
++    /* ============================================================
++       CLIENTES (compradores registrados)
++       Colección separada de /usuarios (personal de la tienda), para
++       que un cliente nunca pueda confundirse con un administrador.
++       Cada cliente solo lee y edita SU propio perfil (doc id == uid).
++    ============================================================ */
++    match /clientes/{clienteId} {
++      allow read: if estaAutenticado() && request.auth.uid == clienteId;
++
++      allow create: if estaAutenticado()
++        && request.auth.uid == clienteId
++        && request.resource.data.keys().hasOnly(['nombre', 'telefono', 'correo', 'creado_en'])
++        && request.resource.data.nombre is string
++        && request.resource.data.nombre.size() > 1
++        && request.resource.data.nombre.size() <= 80
++        && request.resource.data.telefono is string
++        && request.resource.data.telefono.size() >= 6
++        && request.resource.data.telefono.size() <= 20
++        && request.resource.data.correo is string
++        && request.resource.data.creado_en == request.time;
++
++      allow update: if estaAutenticado()
++        && request.auth.uid == clienteId
++        && request.resource.data.keys().hasOnly(['nombre', 'telefono', 'correo', 'creado_en'])
++        && campoInmutable('creado_en')
++        && campoInmutable('correo')
++        && request.resource.data.nombre is string
++        && request.resource.data.nombre.size() > 1
++        && request.resource.data.nombre.size() <= 80
++        && request.resource.data.telefono is string
++        && request.resource.data.telefono.size() >= 6
++        && request.resource.data.telefono.size() <= 20;
++
++      allow delete: if false;
++    }
++
+     /* ============================================================
+        USUARIOS
+     ============================================================ */
+diff --git a/js/services/pedidos.js b/js/services/pedidos.js
+index 649e167..872228f 100644
+--- a/js/services/pedidos.js
++++ b/js/services/pedidos.js
+@@ -1,6 +1,7 @@
+ import { obtenerNegocioActual } from "./negocios.js";
+ import { obtenerClienteId } from "../cliente/auth-cliente.js";
+ import { llamarApi } from "../config/api.js";
++import { authCliente } from "../config/firebase-cliente.js";
+ 
+ /* =====================================================
+    CREAR PEDIDO
+@@ -16,13 +17,16 @@ export async function crearPedido() {
+         throw new Error("No se encontró la tienda actual.");
+     }
+ 
++    // Espera a que haya sesión (anónima o registrada) y toma su token:
++    // la API deduce el cliente desde el token, ya no desde el body.
+     const clienteId = await obtenerClienteId();
++    const token = await authCliente.currentUser.getIdToken();
+ 
+     const respuesta = await llamarApi("/pedidos", {
+         metodo: "POST",
++        token,
+         cuerpo: {
+-            negocio_id: negocio.id,
+-            cliente_id: clienteId
++            negocio_id: negocio.id
+         }
+     });
+ 

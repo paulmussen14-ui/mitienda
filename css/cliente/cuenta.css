@@ -1,0 +1,126 @@
+/* ============================================================
+   MITIENDA — CUENTA DEL CLIENTE (cuenta.html)
+   Requiere theme.css cargado antes que este archivo.
+   ============================================================ */
+
+.login-page {
+    max-width: 440px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+.login-card {
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.login-card h1 { font-size: 22px; margin-bottom: 4px; }
+
+.login-card form { display: flex; flex-direction: column; }
+
+.login-card label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--tinta);
+    margin-top: 14px;
+    margin-bottom: 5px;
+}
+
+.login-card input {
+    border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--tinta);
+    outline: none;
+    transition: .15s;
+}
+
+.login-card input:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-suave);
+}
+
+.login-card .btn {
+    margin-top: 20px;
+    min-height: 44px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabs {
+    display: flex;
+    gap: 6px;
+    margin: 12px 0 4px;
+    border-bottom: 1px solid var(--linea);
+}
+
+.tab {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tinta-suave);
+    cursor: pointer;
+}
+
+.tab.on {
+    color: var(--verde-oscuro);
+    border-bottom-color: var(--mostaza);
+}
+
+.aviso {
+    background: #FFF6E3;
+    border: 1px solid var(--mostaza);
+    color: var(--mostaza-oscuro);
+    font-size: 12.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.login-error {
+    background: #FBEAE8;
+    border: 1px solid var(--rojo);
+    color: var(--rojo);
+    font-size: 12.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.enlace {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--verde);
+}
+
+.nota {
+    font-size: 11.5px;
+    color: var(--tinta-suave);
+    margin-top: 18px;
+}
+
+.btn-salir {
+    margin-top: 14px;
+    background: none;
+    border: none;
+    color: var(--rojo);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
