@@ -138,6 +138,42 @@ service cloud.firestore {
     }
 
     /* ============================================================
+       CLIENTES (compradores registrados)
+       Colección separada de /usuarios (personal de la tienda), para
+       que un cliente nunca pueda confundirse con un administrador.
+       Cada cliente solo lee y edita SU propio perfil (doc id == uid).
+    ============================================================ */
+    match /clientes/{clienteId} {
+      allow read: if estaAutenticado() && request.auth.uid == clienteId;
+
+      allow create: if estaAutenticado()
+        && request.auth.uid == clienteId
+        && request.resource.data.keys().hasOnly(['nombre', 'telefono', 'correo', 'creado_en'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 1
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() >= 6
+        && request.resource.data.telefono.size() <= 20
+        && request.resource.data.correo is string
+        && request.resource.data.creado_en == request.time;
+
+      allow update: if estaAutenticado()
+        && request.auth.uid == clienteId
+        && request.resource.data.keys().hasOnly(['nombre', 'telefono', 'correo', 'creado_en'])
+        && campoInmutable('creado_en')
+        && campoInmutable('correo')
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 1
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.size() >= 6
+        && request.resource.data.telefono.size() <= 20;
+
+      allow delete: if false;
+    }
+
+    /* ============================================================
        USUARIOS
     ============================================================ */
     match /usuarios/{usuarioId} {
