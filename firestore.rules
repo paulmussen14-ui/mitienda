@@ -138,6 +138,40 @@ service cloud.firestore {
     }
 
     /* ============================================================
+       MENSAJES DE CONTACTO
+       Cualquier visitante puede enviar un mensaje a una tienda que
+       exista (el formulario de Contacto no exige sesión). Solo se
+       aceptan los campos del formulario, con tipos y longitudes
+       validados y estado inicial "nuevo". Solo el personal activo
+       de la tienda puede leerlos, y solo puede cambiar su estado.
+    ============================================================ */
+    match /mensajes/{mensajeId} {
+      allow read: if esAdminDelNegocio(resource.data.negocio_id);
+
+      allow create: if request.resource.data.keys().hasOnly(
+            ['negocio_id', 'nombre', 'contacto', 'tipo', 'mensaje', 'estado', 'creadoEn'])
+        && request.resource.data.negocio_id is string
+        && exists(/databases/$(database)/documents/negocios/$(request.resource.data.negocio_id))
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.contacto is string
+        && request.resource.data.contacto.size() > 0
+        && request.resource.data.contacto.size() <= 120
+        && request.resource.data.tipo in ['consulta', 'pedido', 'reclamo', 'otro']
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() > 0
+        && request.resource.data.mensaje.size() <= 1000
+        && request.resource.data.estado == 'nuevo'
+        && request.resource.data.creadoEn == request.time;
+
+      allow update: if esAdminDelNegocio(resource.data.negocio_id)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado']);
+
+      allow delete: if false;
+    }
+
+    /* ============================================================
        CLIENTES (compradores registrados)
        Colección separada de /usuarios (personal de la tienda), para
        que un cliente nunca pueda confundirse con un administrador.

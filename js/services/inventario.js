@@ -4,14 +4,11 @@ import {
     getDoc,
     getDocs,
     query,
-    where,
-    updateDoc,
-    addDoc,
-    increment,
-    serverTimestamp
+    where
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import { db } from "../config/firebase.js";
+import { db, auth } from "../config/firebase.js";
+import { llamarApi } from "../config/api.js";
 
 
 export async function obtenerStock(productoId) {
@@ -33,97 +30,71 @@ export async function obtenerStock(productoId) {
 
 
 /**
- * Registrar entrada de inventario
+ * Registrar una entrada o salida manual de inventario.
+ * La lógica (validar, cambiar el stock y crear el movimiento en una sola
+ * transacción) vive en mitienda-api; aquí solo se envía el token de
+ * Firebase del personal del negocio. El negocio lo determina la API
+ * a partir del token, no el navegador.
  */
-export async function registrarEntrada(
-    productoId,
-    negocioId,
-    cantidad,
-    motivo = "Compra"
-) {
+async function registrarMovimiento(productoId, tipo, cantidad, motivo) {
+
     try {
 
-        if (cantidad <= 0) {
+        if (!(Number(cantidad) > 0)) {
             throw new Error("La cantidad debe ser mayor que 0.");
         }
 
-        const productoRef = doc(db, "productos", productoId);
+        await auth.authStateReady();
 
-        // Aumentar stock
-        await updateDoc(productoRef, {
-            stock: increment(cantidad)
-        });
+        if (!auth.currentUser) {
+            throw new Error("Tu sesión expiró. Inicia sesión nuevamente.");
+        }
 
-        // Registrar movimiento
-        await addDoc(collection(db, "movimientos_inventario"), {
-            producto_id: productoId,
-            negocio_id: negocioId,
-            tipo: "entrada",
-            cantidad: cantidad,
-            motivo: motivo,
-            fecha: serverTimestamp()
+        const token = await auth.currentUser.getIdToken();
+
+        await llamarApi("/inventario/movimientos", {
+            metodo: "POST",
+            token,
+            cuerpo: {
+                producto_id: productoId,
+                tipo,
+                cantidad: Number(cantidad),
+                motivo
+            }
         });
 
         return true;
 
     } catch (error) {
-        console.error("❌ Error registrando entrada:", error);
+        console.error(`❌ Error registrando ${tipo}:`, error);
         throw error;
     }
 }
 
 
 /**
+ * Registrar entrada de inventario
+ */
+export function registrarEntrada(
+    productoId,
+    _negocioId,
+    cantidad,
+    motivo = "Compra"
+) {
+    return registrarMovimiento(productoId, "entrada", cantidad, motivo);
+}
+
+
+/**
  * Registrar salida de inventario
  */
-export async function registrarSalida(
+export function registrarSalida(
     productoId,
-    negocioId,
+    _negocioId,
     cantidad,
     motivo = "Salida"
 ) {
-    try {
-
-        if (cantidad <= 0) {
-            throw new Error("La cantidad debe ser mayor que 0.");
-        }
-
-        const productoRef = doc(db, "productos", productoId);
-
-        // Obtener stock actual
-        const producto = await getDoc(productoRef);
-
-        if (!producto.exists()) {
-            throw new Error("El producto no existe.");
-        }
-
-        const stockActual = Number(producto.data().stock) || 0;
-
-        if (cantidad > stockActual) {
-            throw new Error("No hay suficiente stock disponible.");
-        }
-
-        // Disminuir stock
-        await updateDoc(productoRef, {
-            stock: increment(-cantidad)
-        });
-
-        // Registrar movimiento
-        await addDoc(collection(db, "movimientos_inventario"), {
-            producto_id: productoId,
-            negocio_id: negocioId,
-            tipo: "salida",
-            cantidad: cantidad,
-            motivo: motivo,
-            fecha: serverTimestamp()
-        });
-
-        return true;
-
-    } catch (error) {
-        console.error("❌ Error registrando salida:", error);
-        throw error;
-    }
+    return registrarMovimiento(productoId, "salida", cantidad, motivo);
 }
 
 
