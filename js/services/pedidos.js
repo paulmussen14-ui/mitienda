@@ -9,7 +9,24 @@ import { authCliente } from "../config/firebase-cliente.js";
    y convertir el carrito) vive en mitienda-api.
 ===================================================== */
 
-export async function crearPedido() {
+export async function verificarCuentaCliente() {
+
+    await obtenerClienteId();
+
+    // Solo los clientes registrados (con su perfil completo) pueden hacer pedidos.
+    const usuarioActual = authCliente.currentUser;
+    const perfil = usuarioActual && !usuarioActual.isAnonymous
+        ? await obtenerPerfilCliente(usuarioActual.uid)
+        : null;
+
+    if (!perfil) {
+        const falla = new Error("Crea tu cuenta o inicia sesión para confirmar tu pedido.");
+        falla.codigo = "REQUIERE_CUENTA";
+        throw falla;
+    }
+}
+
+export async function crearPedido({ entrega, pago } = {}) {
 
     const negocio = await obtenerNegocioActual();
 
@@ -21,17 +38,7 @@ export async function crearPedido() {
     // la API deduce el cliente desde el token, ya no desde el body.
     const clienteId = await obtenerClienteId();
 
-    // Solo los clientes registrados (con su perfil completo) pueden hacer pedidos.
-    const usuarioActual = authCliente.currentUser;
-    const perfil = usuarioActual && !usuarioActual.isAnonymous
-        ? await obtenerPerfilCliente(clienteId)
-        : null;
-
-    if (!perfil) {
-        const falla = new Error("Crea tu cuenta o inicia sesión para confirmar tu pedido.");
-        falla.codigo = "REQUIERE_CUENTA";
-        throw falla;
-    }
+    await verificarCuentaCliente();
 
     const token = await authCliente.currentUser.getIdToken();
 
@@ -39,7 +46,9 @@ export async function crearPedido() {
         metodo: "POST",
         token,
         cuerpo: {
-            negocio_id: negocio.id
+            negocio_id: negocio.id,
+            entrega,
+            pago
         }
     });
 

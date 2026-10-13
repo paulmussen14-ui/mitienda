@@ -580,3 +580,72 @@
     }
 
 }
+
+
+/* ============================================================
+   CHECKOUT (entrega y pago simulado)
+   ============================================================ */
+
+.checkout {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkout h3 {
+    font-size: 15px;
+    margin: 10px 0 2px;
+}
+
+.checkout .opcion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    cursor: pointer;
+}
+
+.checkout input[type="text"],
+.checkout input[type="password"] {
+    width: 100%;
+    border: 1.5px solid var(--linea);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--tinta);
+    outline: none;
+}
+
+.checkout input[type="text"]:focus,
+.checkout input[type="password"]:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-suave);
+}
+
+.fila-tarjeta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.badge-sim {
+    background: #FFF6E3;
+    border: 1px solid var(--mostaza);
+    color: var(--mostaza-oscuro);
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    vertical-align: middle;
+}
+
+.checkout .ayuda,
+.checkout .nota-sim {
+    font-size: 11.5px;
+    color: var(--tinta-suave);
+    margin: 4px 0;
+}

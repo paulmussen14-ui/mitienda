@@ -230,9 +230,34 @@ function crearTarjetaPedido(pedido, plantilla) {
 
     const clienteEl = nodo.querySelector('[data-campo="cliente"]');
 
-    clienteEl.textContent = pedido.cliente_id
-        ? `Cliente #${pedido.cliente_id.slice(0, 6).toUpperCase()}`
-        : "-";
+    // Pedidos nuevos traen nombre y celular; los antiguos solo el uid anónimo.
+    if (pedido.cliente_nombre) {
+        clienteEl.textContent = pedido.cliente_telefono
+            ? `${pedido.cliente_nombre} · 📱 ${pedido.cliente_telefono}`
+            : pedido.cliente_nombre;
+    } else {
+        clienteEl.textContent = pedido.cliente_id
+            ? `Cliente #${pedido.cliente_id.slice(0, 6).toUpperCase()}`
+            : "-";
+    }
+
+    const entregaEl = nodo.querySelector('[data-campo="entrega"]');
+    if (pedido.entrega) {
+        let texto = pedido.entrega.tipo === "delivery"
+            ? `Delivery · ${pedido.entrega.direccion || "sin dirección"}`
+            : "Recojo en tienda";
+        if (pedido.entrega.nota) texto += ` · Nota: ${pedido.entrega.nota}`;
+        entregaEl.textContent = texto;
+    }
+
+    const pagoEl = nodo.querySelector('[data-campo="pago"]');
+    if (pedido.pago) {
+        const nombres = { efectivo: "Efectivo", yape: "Yape", plin: "Plin", tarjeta: "Tarjeta" };
+        let texto = `${nombres[pedido.pago.metodo] || pedido.pago.metodo} · ${pedido.pago.estado}`;
+        if (pedido.pago.referencia) texto += ` (${pedido.pago.referencia})`;
+        if (pedido.pago.simulado) texto += " · simulado";
+        pagoEl.textContent = texto;
+    }
 
     const fechaEl = nodo.querySelector('[data-campo="fecha"]');
     fechaEl.textContent = pedido.fecha?.toDate

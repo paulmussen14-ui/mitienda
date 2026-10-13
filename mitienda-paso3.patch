@@ -1,0 +1,494 @@
+diff --git a/css/cliente/carrito.css b/css/cliente/carrito.css
+index a2c83e2..f348a81 100644
+--- a/css/cliente/carrito.css
++++ b/css/cliente/carrito.css
+@@ -579,4 +579,73 @@
+             40px 18px;
+     }
+ 
+-}
+\ No newline at end of file
++}
++
++
++/* ============================================================
++   CHECKOUT (entrega y pago simulado)
++   ============================================================ */
++
++.checkout {
++    margin-top: 18px;
++    display: flex;
++    flex-direction: column;
++    gap: 8px;
++}
++
++.checkout h3 {
++    font-size: 15px;
++    margin: 10px 0 2px;
++}
++
++.checkout .opcion {
++    display: flex;
++    align-items: center;
++    gap: 8px;
++    font-size: 13.5px;
++    cursor: pointer;
++}
++
++.checkout input[type="text"],
++.checkout input[type="password"] {
++    width: 100%;
++    border: 1.5px solid var(--linea);
++    border-radius: 10px;
++    padding: 9px 12px;
++    font-family: 'Inter', sans-serif;
++    font-size: 13.5px;
++    color: var(--tinta);
++    outline: none;
++}
++
++.checkout input[type="text"]:focus,
++.checkout input[type="password"]:focus {
++    border-color: var(--verde);
++    box-shadow: 0 0 0 3px var(--verde-suave);
++}
++
++.fila-tarjeta {
++    display: grid;
++    grid-template-columns: 1fr 1fr;
++    gap: 8px;
++    margin-top: 8px;
++}
++
++.badge-sim {
++    background: #FFF6E3;
++    border: 1px solid var(--mostaza);
++    color: var(--mostaza-oscuro);
++    font-family: 'Inter', sans-serif;
++    font-size: 10.5px;
++    font-weight: 700;
++    padding: 2px 8px;
++    border-radius: 999px;
++    vertical-align: middle;
++}
++
++.checkout .ayuda,
++.checkout .nota-sim {
++    font-size: 11.5px;
++    color: var(--tinta-suave);
++    margin: 4px 0;
++}
+diff --git a/js/admin/admin-pedidos.js b/js/admin/admin-pedidos.js
+index e578518..33bafae 100644
+--- a/js/admin/admin-pedidos.js
++++ b/js/admin/admin-pedidos.js
+@@ -230,9 +230,34 @@ function crearTarjetaPedido(pedido, plantilla) {
+ 
+     const clienteEl = nodo.querySelector('[data-campo="cliente"]');
+ 
+-    clienteEl.textContent = pedido.cliente_id
+-        ? `Cliente #${pedido.cliente_id.slice(0, 6).toUpperCase()}`
+-        : "-";
++    // Pedidos nuevos traen nombre y celular; los antiguos solo el uid anónimo.
++    if (pedido.cliente_nombre) {
++        clienteEl.textContent = pedido.cliente_telefono
++            ? `${pedido.cliente_nombre} · 📱 ${pedido.cliente_telefono}`
++            : pedido.cliente_nombre;
++    } else {
++        clienteEl.textContent = pedido.cliente_id
++            ? `Cliente #${pedido.cliente_id.slice(0, 6).toUpperCase()}`
++            : "-";
++    }
++
++    const entregaEl = nodo.querySelector('[data-campo="entrega"]');
++    if (pedido.entrega) {
++        let texto = pedido.entrega.tipo === "delivery"
++            ? `Delivery · ${pedido.entrega.direccion || "sin dirección"}`
++            : "Recojo en tienda";
++        if (pedido.entrega.nota) texto += ` · Nota: ${pedido.entrega.nota}`;
++        entregaEl.textContent = texto;
++    }
++
++    const pagoEl = nodo.querySelector('[data-campo="pago"]');
++    if (pedido.pago) {
++        const nombres = { efectivo: "Efectivo", yape: "Yape", plin: "Plin", tarjeta: "Tarjeta" };
++        let texto = `${nombres[pedido.pago.metodo] || pedido.pago.metodo} · ${pedido.pago.estado}`;
++        if (pedido.pago.referencia) texto += ` (${pedido.pago.referencia})`;
++        if (pedido.pago.simulado) texto += " · simulado";
++        pagoEl.textContent = texto;
++    }
+ 
+     const fechaEl = nodo.querySelector('[data-campo="fecha"]');
+     fechaEl.textContent = pedido.fecha?.toDate
+diff --git a/js/cliente/carrito.js b/js/cliente/carrito.js
+index 7d38c1e..c94a21f 100644
+--- a/js/cliente/carrito.js
++++ b/js/cliente/carrito.js
+@@ -14,6 +14,7 @@ import {
+ import { dbCliente as db } from "../config/firebase-cliente.js";
+ import { obtenerNegocioActual, configurarNavegacionNegocio } from "../services/negocios.js";
+ import { obtenerClienteId } from "./auth-cliente.js";
++import { iniciarCheckout, leerCheckout, limpiarDatosTarjeta, simularProcesamiento } from "./checkout.js";
+ 
+ export async function obtenerClienteActual() {
+ 
+@@ -1541,12 +1542,34 @@ function configurarConfirmarPedido() {
+ 
+             try {
+ 
++                /*
++                 * 1) Debe tener cuenta (si no, va a registrarse
++                 *    ANTES de llenar el formulario de entrega y pago).
++                 * 2) Se validan entrega y pago.
++                 */
++
++                const modulo =
++                    await import(
++                        "../services/pedidos.js"
++                    );
++
++                await modulo.verificarCuentaCliente();
++
++                const datosCheckout =
++                    leerCheckout();
++
+                 boton.disabled =
+                     true;
+ 
+ 
+                 boton.textContent =
+-                    "Creando pedido...";
++                    datosCheckout.pago.metodo === "efectivo"
++                        ? "Creando pedido..."
++                        : "Procesando pago (simulado)...";
++
++                await simularProcesamiento(
++                    datosCheckout.pago
++                );
+ 
+ 
+                 const carrito =
+@@ -1573,14 +1596,12 @@ function configurarConfirmarPedido() {
+                  * dependencia circular.
+                  */
+ 
+-                const modulo =
+-                    await import(
+-                        "../services/pedidos.js"
++                const resultado =
++                    await modulo.crearPedido(
++                        datosCheckout
+                     );
+ 
+-
+-                const resultado =
+-                    await modulo.crearPedido();
++                limpiarDatosTarjeta();
+ 
+ 
+                 if (
+@@ -1718,6 +1739,8 @@ async function iniciarCarrito() {
+ 
+         configurarConfirmarPedido();
+ 
++        iniciarCheckout();
++
+ 
+         await renderizarCarrito();
+ 
+diff --git a/js/cliente/checkout.js b/js/cliente/checkout.js
+new file mode 100644
+index 0000000..4d87d28
+--- /dev/null
++++ b/js/cliente/checkout.js
+@@ -0,0 +1,127 @@
++/* =====================================================
++   CHECKOUT: datos de entrega y pago SIMULADO
++   Los pagos son una simulación académica: no se cobra nada.
++   Del formulario de tarjeta solo se envía a la API el
++   método y los últimos 4 dígitos; el resto nunca sale
++   del navegador ni se guarda.
++===================================================== */
++
++const $ = (id) => document.getElementById(id);
++
++function metodoPagoElegido() {
++    return document.querySelector('input[name="pago"]:checked')?.value || "efectivo";
++}
++
++function entregaElegida() {
++    return document.querySelector('input[name="entrega"]:checked')?.value || "recojo";
++}
++
++// Algoritmo de Luhn: valida que el número de tarjeta de prueba sea coherente.
++function luhnValido(numero) {
++    let suma = 0;
++    let doble = false;
++    for (let i = numero.length - 1; i >= 0; i--) {
++        let digito = Number(numero[i]);
++        if (doble) {
++            digito *= 2;
++            if (digito > 9) digito -= 9;
++        }
++        suma += digito;
++        doble = !doble;
++    }
++    return suma % 10 === 0;
++}
++
++function vencimientoValido(texto) {
++    const m = /^(\d{2})\/(\d{2})$/.exec(texto);
++    if (!m) return false;
++    const mes = Number(m[1]);
++    const anio = 2000 + Number(m[2]);
++    if (mes < 1 || mes > 12) return false;
++    const finDeMes = new Date(anio, mes, 0, 23, 59, 59);
++    return finDeMes >= new Date();
++}
++
++function actualizarPaneles() {
++    const metodo = metodoPagoElegido();
++    $("pago-operacion").style.display = (metodo === "yape" || metodo === "plin") ? "block" : "none";
++    $("pago-tarjeta").style.display = metodo === "tarjeta" ? "block" : "none";
++    $("campo-direccion").style.display = entregaElegida() === "delivery" ? "block" : "none";
++
++    const etiqueta = $("etiqueta-operacion");
++    if (etiqueta) etiqueta.textContent = metodo === "plin" ? "Plin" : "Yape";
++}
++
++export function iniciarCheckout() {
++
++    if (!$("checkout")) return;
++
++    document.querySelectorAll('input[name="pago"], input[name="entrega"]').forEach((radio) => {
++        radio.addEventListener("change", actualizarPaneles);
++    });
++
++    // Formato amigable mientras escribe.
++    $("co-tarjeta").addEventListener("input", (e) => {
++        const digitos = e.target.value.replace(/\D/g, "").slice(0, 16);
++        e.target.value = digitos.replace(/(.{4})/g, "$1 ").trim();
++    });
++    $("co-vence").addEventListener("input", (e) => {
++        const digitos = e.target.value.replace(/\D/g, "").slice(0, 4);
++        e.target.value = digitos.length > 2 ? `${digitos.slice(0, 2)}/${digitos.slice(2)}` : digitos;
++    });
++
++    actualizarPaneles();
++}
++
++/* Lee y valida el formulario. Devuelve { entrega, pago } listo para la API,
++   o lanza un Error con un mensaje claro para el cliente. */
++export function leerCheckout() {
++
++    const tipo = entregaElegida();
++    const entrega = { tipo, nota: $("co-nota").value.trim() };
++
++    if (tipo === "delivery") {
++        entrega.direccion = $("co-direccion").value.trim();
++        if (entrega.direccion.length < 5) {
++            throw new Error("Escribe la dirección de entrega.");
++        }
++    }
++
++    const metodo = metodoPagoElegido();
++    const pago = { metodo };
++
++    if (metodo === "yape" || metodo === "plin") {
++        const codigo = $("co-operacion").value.trim();
++        if (!/^\d{6,12}$/.test(codigo)) {
++            throw new Error("Ingresa el código de operación (6 a 12 dígitos).");
++        }
++        pago.codigo_operacion = codigo;
++    }
++
++    if (metodo === "tarjeta") {
++        const numero = $("co-tarjeta").value.replace(/\s/g, "");
++        if (!/^\d{16}$/.test(numero) || !luhnValido(numero)) {
++            throw new Error("El número de tarjeta no es válido. Para la simulación usa 4242 4242 4242 4242.");
++        }
++        if (!vencimientoValido($("co-vence").value.trim())) {
++            throw new Error("La fecha de vencimiento no es válida (MM/AA).");
++        }
++        if (!/^\d{3,4}$/.test($("co-cvv").value.trim())) {
++            throw new Error("El CVV no es válido.");
++        }
++        pago.ultimos4 = numero.slice(-4);
++    }
++
++    return { entrega, pago };
++}
++
++// Limpia los campos de tarjeta para que no queden datos en pantalla.
++export function limpiarDatosTarjeta() {
++    ["co-tarjeta", "co-vence", "co-cvv"].forEach((id) => { if ($(id)) $(id).value = ""; });
++}
++
++// Pequeña espera para que la simulación se sienta como un pago real.
++export function simularProcesamiento(pago) {
++    if (pago.metodo === "efectivo") return Promise.resolve();
++    return new Promise((resolve) => setTimeout(resolve, 1200));
++}
+diff --git a/js/services/pedidos.js b/js/services/pedidos.js
+index 4fd5c48..4cb48de 100644
+--- a/js/services/pedidos.js
++++ b/js/services/pedidos.js
+@@ -9,22 +9,14 @@ import { authCliente } from "../config/firebase-cliente.js";
+    y convertir el carrito) vive en mitienda-api.
+ ===================================================== */
+ 
+-export async function crearPedido() {
++export async function verificarCuentaCliente() {
+ 
+-    const negocio = await obtenerNegocioActual();
+-
+-    if (!negocio) {
+-        throw new Error("No se encontró la tienda actual.");
+-    }
+-
+-    // Espera a que haya sesión (anónima o registrada) y toma su token:
+-    // la API deduce el cliente desde el token, ya no desde el body.
+-    const clienteId = await obtenerClienteId();
++    await obtenerClienteId();
+ 
+     // Solo los clientes registrados (con su perfil completo) pueden hacer pedidos.
+     const usuarioActual = authCliente.currentUser;
+     const perfil = usuarioActual && !usuarioActual.isAnonymous
+-        ? await obtenerPerfilCliente(clienteId)
++        ? await obtenerPerfilCliente(usuarioActual.uid)
+         : null;
+ 
+     if (!perfil) {
+@@ -32,6 +24,21 @@ export async function crearPedido() {
+         falla.codigo = "REQUIERE_CUENTA";
+         throw falla;
+     }
++}
++
++export async function crearPedido({ entrega, pago } = {}) {
++
++    const negocio = await obtenerNegocioActual();
++
++    if (!negocio) {
++        throw new Error("No se encontró la tienda actual.");
++    }
++
++    // Espera a que haya sesión (anónima o registrada) y toma su token:
++    // la API deduce el cliente desde el token, ya no desde el body.
++    const clienteId = await obtenerClienteId();
++
++    await verificarCuentaCliente();
+ 
+     const token = await authCliente.currentUser.getIdToken();
+ 
+@@ -39,7 +46,9 @@ export async function crearPedido() {
+         metodo: "POST",
+         token,
+         cuerpo: {
+-            negocio_id: negocio.id
++            negocio_id: negocio.id,
++            entrega,
++            pago
+         }
+     });
+ 
+diff --git a/pages/admin/pedidos.html b/pages/admin/pedidos.html
+index d6972d9..9f0c9fc 100644
+--- a/pages/admin/pedidos.html
++++ b/pages/admin/pedidos.html
+@@ -81,6 +81,14 @@
+                 👤 Cliente: <span data-campo="cliente"></span>
+             </div>
+ 
++            <div class="pedido-fecha">
++                🚚 Entrega: <span data-campo="entrega">-</span>
++            </div>
++
++            <div class="pedido-fecha">
++                💳 Pago: <span data-campo="pago">-</span>
++            </div>
++
+             <div class="pedido-productos">
+                 <h3>Productos</h3>
+                 <div data-campo="detalle" class="detalle-pedido"></div>
+diff --git a/pages/cliente/carrito.html b/pages/cliente/carrito.html
+index 1c8e62b..39c1ca7 100644
+--- a/pages/cliente/carrito.html
++++ b/pages/cliente/carrito.html
+@@ -236,6 +236,76 @@
+                 </div>
+ 
+ 
++                <section id="checkout" class="checkout">
++
++                    <h3>🚚 Entrega</h3>
++
++                    <label class="opcion">
++                        <input type="radio" name="entrega" value="recojo" checked>
++                        Recojo en tienda
++                    </label>
++                    <label class="opcion">
++                        <input type="radio" name="entrega" value="delivery">
++                        Delivery
++                    </label>
++
++                    <div id="campo-direccion" style="display:none;">
++                        <input type="text" id="co-direccion" maxlength="150"
++                               placeholder="Dirección y referencia" autocomplete="street-address">
++                    </div>
++
++                    <input type="text" id="co-nota" maxlength="140"
++                           placeholder="Nota para la tienda (opcional)">
++
++                    <h3>💳 Pago <span class="badge-sim">simulado</span></h3>
++
++                    <label class="opcion">
++                        <input type="radio" name="pago" value="efectivo" checked>
++                        Efectivo (pagas al recibir)
++                    </label>
++                    <label class="opcion">
++                        <input type="radio" name="pago" value="yape">
++                        Yape
++                    </label>
++                    <label class="opcion">
++                        <input type="radio" name="pago" value="plin">
++                        Plin
++                    </label>
++                    <label class="opcion">
++                        <input type="radio" name="pago" value="tarjeta">
++                        Tarjeta
++                    </label>
++
++                    <div id="pago-operacion" style="display:none;">
++                        <p class="ayuda">
++                            Paga con <strong id="etiqueta-operacion">Yape</strong> al número de la tienda
++                            y escribe el código de operación. <em>(Simulación: usa cualquier número de 6 a 12 dígitos.)</em>
++                        </p>
++                        <input type="text" id="co-operacion" inputmode="numeric" maxlength="12"
++                               placeholder="Código de operación" autocomplete="off">
++                    </div>
++
++                    <div id="pago-tarjeta" style="display:none;">
++                        <p class="ayuda">
++                            Tarjeta de prueba: <strong>4242 4242 4242 4242</strong>, cualquier fecha futura y CVV de 3 dígitos.
++                        </p>
++                        <input type="text" id="co-tarjeta" inputmode="numeric" maxlength="19"
++                               placeholder="Número de tarjeta" autocomplete="off">
++                        <div class="fila-tarjeta">
++                            <input type="text" id="co-vence" inputmode="numeric" maxlength="5"
++                                   placeholder="MM/AA" autocomplete="off">
++                            <input type="password" id="co-cvv" inputmode="numeric" maxlength="4"
++                                   placeholder="CVV" autocomplete="off">
++                        </div>
++                    </div>
++
++                    <p class="nota-sim">
++                        Simulación académica: no se realiza ningún cobro real y no se guardan datos de tarjeta.
++                    </p>
++
++                </section>
++
++
+                 <button
+                     id="btn-confirmar-pedido"
+                     type="button"

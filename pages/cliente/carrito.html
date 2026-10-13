@@ -236,6 +236,76 @@
                 </div>
 
 
+                <section id="checkout" class="checkout">
+
+                    <h3>🚚 Entrega</h3>
+
+                    <label class="opcion">
+                        <input type="radio" name="entrega" value="recojo" checked>
+                        Recojo en tienda
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="entrega" value="delivery">
+                        Delivery
+                    </label>
+
+                    <div id="campo-direccion" style="display:none;">
+                        <input type="text" id="co-direccion" maxlength="150"
+                               placeholder="Dirección y referencia" autocomplete="street-address">
+                    </div>
+
+                    <input type="text" id="co-nota" maxlength="140"
+                           placeholder="Nota para la tienda (opcional)">
+
+                    <h3>💳 Pago <span class="badge-sim">simulado</span></h3>
+
+                    <label class="opcion">
+                        <input type="radio" name="pago" value="efectivo" checked>
+                        Efectivo (pagas al recibir)
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="pago" value="yape">
+                        Yape
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="pago" value="plin">
+                        Plin
+                    </label>
+                    <label class="opcion">
+                        <input type="radio" name="pago" value="tarjeta">
+                        Tarjeta
+                    </label>
+
+                    <div id="pago-operacion" style="display:none;">
+                        <p class="ayuda">
+                            Paga con <strong id="etiqueta-operacion">Yape</strong> al número de la tienda
+                            y escribe el código de operación. <em>(Simulación: usa cualquier número de 6 a 12 dígitos.)</em>
+                        </p>
+                        <input type="text" id="co-operacion" inputmode="numeric" maxlength="12"
+                               placeholder="Código de operación" autocomplete="off">
+                    </div>
+
+                    <div id="pago-tarjeta" style="display:none;">
+                        <p class="ayuda">
+                            Tarjeta de prueba: <strong>4242 4242 4242 4242</strong>, cualquier fecha futura y CVV de 3 dígitos.
+                        </p>
+                        <input type="text" id="co-tarjeta" inputmode="numeric" maxlength="19"
+                               placeholder="Número de tarjeta" autocomplete="off">
+                        <div class="fila-tarjeta">
+                            <input type="text" id="co-vence" inputmode="numeric" maxlength="5"
+                                   placeholder="MM/AA" autocomplete="off">
+                            <input type="password" id="co-cvv" inputmode="numeric" maxlength="4"
+                                   placeholder="CVV" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <p class="nota-sim">
+                        Simulación académica: no se realiza ningún cobro real y no se guardan datos de tarjeta.
+                    </p>
+
+                </section>
+
+
                 <button
                     id="btn-confirmar-pedido"
                     type="button"

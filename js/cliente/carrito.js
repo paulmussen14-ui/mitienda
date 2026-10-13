@@ -14,6 +14,7 @@ import {
 import { dbCliente as db } from "../config/firebase-cliente.js";
 import { obtenerNegocioActual, configurarNavegacionNegocio } from "../services/negocios.js";
 import { obtenerClienteId } from "./auth-cliente.js";
+import { iniciarCheckout, leerCheckout, limpiarDatosTarjeta, simularProcesamiento } from "./checkout.js";
 
 export async function obtenerClienteActual() {
 
@@ -1541,12 +1542,34 @@ function configurarConfirmarPedido() {
 
             try {
 
+                /*
+                 * 1) Debe tener cuenta (si no, va a registrarse
+                 *    ANTES de llenar el formulario de entrega y pago).
+                 * 2) Se validan entrega y pago.
+                 */
+
+                const modulo =
+                    await import(
+                        "../services/pedidos.js"
+                    );
+
+                await modulo.verificarCuentaCliente();
+
+                const datosCheckout =
+                    leerCheckout();
+
                 boton.disabled =
                     true;
 
 
                 boton.textContent =
-                    "Creando pedido...";
+                    datosCheckout.pago.metodo === "efectivo"
+                        ? "Creando pedido..."
+                        : "Procesando pago (simulado)...";
+
+                await simularProcesamiento(
+                    datosCheckout.pago
+                );
 
 
                 const carrito =
@@ -1573,14 +1596,12 @@ function configurarConfirmarPedido() {
                  * dependencia circular.
                  */
 
-                const modulo =
-                    await import(
-                        "../services/pedidos.js"
+                const resultado =
+                    await modulo.crearPedido(
+                        datosCheckout
                     );
 
-
-                const resultado =
-                    await modulo.crearPedido();
+                limpiarDatosTarjeta();
 
 
                 if (
@@ -1717,6 +1738,8 @@ async function iniciarCarrito() {
 
 
         configurarConfirmarPedido();
+
+        iniciarCheckout();
 
 
         await renderizarCarrito();
